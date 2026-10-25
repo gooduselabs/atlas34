@@ -6,7 +6,25 @@
 
 🇬🇧 Interactive atlas of Vietnam's 34 provinces and 3,321 communes after the 2025 reform. It includes an old ↔ new address converter that resolves split communes by house number or street (OSM), by map click or by GPS, with legal citations. Each province page lists the merged old provinces, area and population, sourced leaders and communes.
 
-<img src="docs/screenshots/p3-convert-result.png" width="260"> <img src="docs/screenshots/p5-province.png" width="260"> <img src="docs/screenshots/01-home-desktop.png" width="520">
+<img src="docs/screenshots/01_home.png" width="49%"> <img src="docs/screenshots/02_home_dark.png" width="49%">
+<img src="docs/screenshots/04_convert.png" width="49%"> <img src="docs/screenshots/06_bulk.png" width="49%">
+<img src="docs/screenshots/07_mobile_home.png" width="24%"> <img src="docs/screenshots/08_mobile_ward.png" width="24%"> <img src="docs/screenshots/09_mobile_convert_dark.png" width="24%"> <img src="docs/screenshots/10_mobile_bulk.png" width="24%">
+
+## Tính năng / Features
+- **Bản đồ** 34 tỉnh → 3.321 xã, nền đường phố OSM tự host (PMTiles), ảnh vệ tinh, trụ sở UBND xã; **giao diện sáng/tối** (nút trên thanh đầu, tự theo hệ điều hành). / Map, OSM basemap, satellite, light/dark theme.
+- **Đổi địa chỉ cũ ↔ mới**: gõ tên xã cũ, hoặc **dán nguyên địa chỉ** ("60 đường số 1, P. Tân Thành, Q. Tân Phú, TP.HCM"); xã bị chia được xác định theo số nhà/đường (OSM), điểm chọn trên bản đồ hoặc **GPS**, kèm trích dẫn nghị quyết. / Old ↔ new converter, paste a full address, GPS.
+- **Đổi hàng loạt** (`/hang-loat`): dán danh sách hoặc kéo thả CSV/TXT ≤ 500 dòng → bảng kết quả 3 mức tin cậy → tải CSV. Chạy hoàn toàn trên trình duyệt ở bản GitHub Pages. / Bulk converter with CSV export.
+- **API** `POST /api/bulk` (bản Docker): 200 địa chỉ/ngày/IP miễn phí; khoá API (`X-Api-Key`) nâng hạn mức, tạo trong `/admin` → *Khoá API*. / Bulk API with API keys.
+- **Trang riêng cho từng xã** `/xa/<slug>-<mã>` (3.321 trang, có SEO + sitemap) và từng tỉnh `/tinh/<slug>`. / Per-ward and per-province pages.
+- Di động: nội dung là bảng kéo lên/xuống trên bản đồ; tra cứu gần đây lưu trên máy. / Mobile bottom-sheet, recent searches.
+
+### API hàng loạt / Bulk API
+```bash
+curl -X POST https://<host>/api/bulk -H 'Content-Type: application/json' -H 'X-Api-Key: a34_…' \
+  -d '{"addresses":["60 đường số 1, Phường Tân Thành, Quận Tân Phú, TP.HCM"]}'
+# → {"results":[{"old":"…","new":"60 đường số 1, Phường Phú Thọ Hoà, Thành phố Hồ Chí Minh","code":"27022","status":"ok","note":"Xác định theo vị trí đường"}],"quota":{"used":1,"limit":10000}}
+```
+`status`: `ok` chắc chắn · `warn` cần kiểm tra (xã cũ bị chia, hoặc trùng tên) · `bad` không nhận ra. Biến môi trường `BULK_FREE_LIMIT` (mặc định 200).
 
 ## Chạy / Run
 - **GitHub Pages (tĩnh / static):** `cd app && npm ci && BASE=/atlas34 node scripts/build-static.mjs` → `app/dist`. Mỗi lần push lên `main`, `.github/workflows/pages.yml` tự triển khai.

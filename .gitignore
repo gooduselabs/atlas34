@@ -5,7 +5,7 @@ node_modules/
 raw/
 app/var/
 app/dist/
-screenshots/
+/screenshots/
 test/node_modules/
 *.db
 *.db-*

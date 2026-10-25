@@ -11,8 +11,17 @@ const C = { land: '#ECE6DA', water: '#BFD3D0', wood: '#DCE3CF', grass: '#E3E6D2'
   ink: '#1B1A17', mute: '#6B655A', mot: '#E3A35B', trunk: '#EBBE77', pri: '#F3D79A', sec: '#FAF2DA', road: '#FFFFFF', casing: '#BDB3A2', rail: '#9C9284' };
 const W = (a, b) => ['interpolate', ['exponential', 1.6], ['zoom'], 6, a, 18, b];
 const Wc = w => ['interpolate', ['exponential', 1.6], ['zoom'], 6, w[4] + 1.2, 18, w[6] + 3];
-window.atlasBasemap = function (src, minzoom = 0, maxzoom = 24) {
-  const L = []; const add = l => L.push({ ...l, id: `${src}-${l.id}`, source: src, minzoom: Math.max(minzoom, l.minzoom || 0), maxzoom: Math.min(maxzoom, l.maxzoom || 24) });
+// Dark theme: explicit mapping for the light palette, generic lightness inversion for anything else.
+const DARK = { '#ECE6DA': '#1E1D17', '#BFD3D0': '#121D1E', '#DCE3CF': '#1C2219', '#E3E6D2': '#20231A', '#D6E2C8': '#1B2618', '#E8E0D2': '#26231C', '#E2DCD6': '#2A2722', '#DCD3C4': '#302C24', '#CBBFAD': '#3E3830',
+  '#1B1A17': '#EDE6D6', '#6B655A': '#A39C8B', '#E3A35B': '#8C5E2E', '#EBBE77': '#7E6336', '#F3D79A': '#5E5033', '#FAF2DA': '#3C382C', '#FFFFFF': '#3A372E', '#BDB3A2': '#15140F', '#9C9284': '#6E675B',
+  '#5E574B': '#B8B0A0', '#4A453C': '#CFC7B5', '#4E7470': '#7FB3AD', '#6B5E4A': '#BFAF95', '#7D7466': '#A8A092', '#8D8577': '#9D9587', '#A0886A': '#B9A382', '#B5AA98': '#4A463E', '#E0DACE': '#2A2823',
+  'rgba(255,255,255,.85)': 'rgba(23,22,15,.85)', 'rgba(255,255,255,.9)': 'rgba(23,22,15,.9)' };
+const tone = v => { if (typeof v === 'string') { if (DARK[v]) return DARK[v]; const m = v.match(/^#([0-9a-f]{6})$/i); if (!m) return v;
+    const [r, g, b] = [0, 2, 4].map(i => parseInt(m[1].slice(i, i + 2), 16) / 255); const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2; const nl = 1 - l; const k = l ? nl / l : 0;
+    return '#' + [r, g, b].map(x => Math.round(Math.min(1, x * k) * 255).toString(16).padStart(2, '0')).join(''); }
+  if (Array.isArray(v)) return v.map(tone); return v; };
+window.atlasBasemap = function (src, minzoom = 0, maxzoom = 24, theme = window.atlasTheme || 'light') {
+  const L = []; const dark = theme === 'dark'; const fix = l => { if (dark && l.paint) l.paint = Object.fromEntries(Object.entries(l.paint).map(([k, v]) => [k, /color/.test(k) ? tone(v) : v])); return l; }; const add = l => L.push({ ...l, id: `${src}-${l.id}`, source: src, minzoom: Math.max(minzoom, l.minzoom || 0), maxzoom: Math.min(maxzoom, l.maxzoom || 24) });
   add({ id: 'landcover-wood', type: 'fill', 'source-layer': 'landcover', filter: ['in', ['get', 'class'], ['literal', ['wood', 'forest']]], paint: { 'fill-color': C.wood, 'fill-opacity': .8 } });
   add({ id: 'landcover-grass', type: 'fill', 'source-layer': 'landcover', filter: ['in', ['get', 'class'], ['literal', ['grass', 'farmland', 'wetland']]], paint: { 'fill-color': C.grass, 'fill-opacity': .6 } });
   add({ id: 'landuse-res', type: 'fill', 'source-layer': 'landuse', minzoom: 10, filter: ['in', ['get', 'class'], ['literal', ['residential', 'suburb', 'neighbourhood']]], paint: { 'fill-color': C.res, 'fill-opacity': .7 } });
@@ -47,7 +56,7 @@ window.atlasBasemap = function (src, minzoom = 0, maxzoom = 24) {
   add({ id: 'place-town', type: 'symbol', 'source-layer': 'place', minzoom: 8, filter: ['all', notIslands, ['in', ['get', 'class'], ['literal', ['city', 'town']]]],
     layout: { 'text-field': name, 'text-font': FB, 'text-size': ['interpolate', ['linear'], ['zoom'], 8, 11, 14, 16], 'text-max-width': 8 },
     paint: { 'text-color': C.ink, 'text-halo-color': 'rgba(255,255,255,.9)', 'text-halo-width': 1.6 } });
-  return L;
+  return L.map(fix);
 };
 window.atlasBasemapAttribution = '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · OpenMapTiles schema';
 window.atlasSatellite = { type: 'raster', tileSize: 256, maxzoom: 13, tiles: ['https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/GoogleMapsCompatible/{z}/{y}/{x}.jpg'],

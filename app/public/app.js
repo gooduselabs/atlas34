@@ -14,6 +14,27 @@ const ROLE = { chu_tich: 'Chủ tịch UBND', bi_thu: 'Bí thư Tỉnh ủy / Th
 const B = window.__BASE || '';
 const j = u => fetch(B + u).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
 const api = u => window.__api ? window.__api(u) : j(u);
+// ---------- THEME ----------
+const PAL = { light: { ink: '#1B1A17', paper2: '#F7F2E7', red: '#C8341E', hov: '#E9C46A', m2: '#E2BE7A', m3: '#D9A441', ph: '#F3E3C0', sea: '#DCE3DE', land: '#E2DED6', mask: '#BFD3D0', wall: '#7A3B2E', halo: 'rgba(247,242,231,.9)', white: '#FFFFFF' },
+  dark: { ink: '#EDE6D6', paper2: '#2A2720', red: '#F0613F', hov: '#8C6A1E', m2: '#5A4A28', m3: '#7A5E24', ph: '#2E2A1E', sea: '#1C2A2B', land: '#1E1D17', mask: '#121D1E', wall: '#D9A98C', halo: 'rgba(23,22,15,.9)', white: '#17160F' } };
+const theme = () => document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+const T = () => PAL[theme()];
+function setTheme(t) { try { t ? localStorage.setItem('a34-theme', t) : localStorage.removeItem('a34-theme'); } catch {} if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; applyTheme(); }
+function applyTheme() { window.atlasTheme = theme(); $('#themeb')?.setAttribute('aria-pressed', theme() === 'dark'); if (map?.isStyleLoaded?.() && map.getLayer('prov-fill')) applyMapTheme(); }
+$('#themeb').onclick = () => setTheme(theme() === 'dark' ? 'light' : 'dark');
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (!document.documentElement.dataset.theme) applyTheme(); });
+window.atlasTheme = theme();
+// ---------- UI HELPERS ----------
+let toastEl, toastTm;
+function toast(msg, err) { if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'toast'; toastEl.setAttribute('role', 'status'); document.body.appendChild(toastEl); }
+  toastEl.textContent = msg; toastEl.classList.toggle('err', !!err); toastEl.classList.add('on'); clearTimeout(toastTm); toastTm = setTimeout(() => toastEl.classList.remove('on'), err ? 4500 : 2600); }
+const skeleton = (h = '') => `<div class="sec">${h}<div class="skel h"></div><div class="skel l" style="width:70%"></div><div class="skel l" style="width:45%"></div></div><div class="skel b" style="margin:0 28px"></div><div class="sec"><div class="skel l"></div><div class="skel l" style="width:85%"></div><div class="skel l" style="width:60%"></div></div>`;
+const errbox = (msg, retry) => `<div class="errbox"><b>Không tải được dữ liệu</b>${esc(msg || 'Kiểm tra kết nối mạng rồi thử lại.')}<br><button class="btn" onclick="${retry || 'location.reload()'}">Thử lại</button></div>`;
+const RECENT_KEY = 'a34-recent';
+const recents = () => { try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch { return []; } };
+function addRecent(label, url) { try { const r = recents().filter(x => x.url !== url); r.unshift({ label, url, at: Date.now() }); localStorage.setItem(RECENT_KEY, JSON.stringify(r.slice(0, 8))); } catch {} }
+function recentHTML() { const r = recents(); if (!r.length) return ''; return `<div class="h-s" style="margin-top:22px">Tra cứu gần đây <button class="clr" id="clr-recent" style="margin-left:auto">Xoá</button></div><ul class="recent">${r.map(x => `<li><a href="${B}${esc(x.url)}">${esc(x.label)}</a><small>${new Date(x.at).toLocaleDateString('vi-VN')}</small></li>`).join('')}</ul>`; }
+function bindRecent() { const b = $('#clr-recent'); if (b) b.onclick = () => { try { localStorage.removeItem(RECENT_KEY); } catch {} b.closest('.h-s').nextElementSibling?.remove(); b.closest('.h-s').remove(); }; }
 
 // ---------- MAP ----------
 let map, hoverId = null, selId = null, wardHover = null, labels = [], fallbackLabels = [];
@@ -30,18 +51,15 @@ function initMap(geo) {
     geo.features.forEach(f => { f.id = +f.properties.code; const p = S.byCode[f.properties.code]; f.properties.merged = p?.merged ? 1 : 0; f.properties.olds = p?.oldProvinces.length || 1; });
     map.addSource('prov', { type: 'geojson', data: geo, promoteId: undefined });
     map.addSource('borders', { type: 'geojson', data: B + '/geo/borders.json' });
-    map.addLayer({ id: 'prov-shadow', type: 'line', source: 'prov', paint: { 'line-color': '#1B1A17', 'line-width': 5, 'line-opacity': .12, 'line-translate': [3, 3] } });
-    map.addLayer({ id: 'prov-fill', type: 'fill', source: 'prov', paint: {
-      'fill-color': ['case', ['boolean', ['feature-state', 'sel'], false], '#C8341E',
-        ['boolean', ['feature-state', 'hover'], false], '#E9C46A', ['==', ['get', 'merged'], 1], ['interpolate', ['linear'], ['get', 'olds'], 2, '#E2BE7A', 3, '#D9A441'], '#F7F2E7'],
-      'fill-opacity': S.tiles ? ['interpolate', ['linear'], ['zoom'], 5, ['case', ['boolean', ['feature-state', 'dim'], false], .3, .92], 8, ['case', ['boolean', ['feature-state', 'dim'], false], .18, .5], 10, ['case', ['boolean', ['feature-state', 'dim'], false], .08, .14], 13, ['case', ['boolean', ['feature-state', 'dim'], false], 0, .04]] : ['case', ['boolean', ['feature-state', 'dim'], false], .35, 1] } });
-    map.addLayer({ id: 'prov-line', type: 'line', source: 'borders', paint: { 'line-color': '#1B1A17', 'line-width': ['interpolate', ['linear'], ['zoom'], 4, .5, 9, 1.4] } });
-    map.addLayer({ id: 'prov-outline', type: 'line', source: 'prov', paint: { 'line-color': '#1B1A17', 'line-width': ['interpolate', ['linear'], ['zoom'], 4, 1, 9, 2] } });
+    const P = overlayPaints(); map.addLayer({ id: 'prov-shadow', type: 'line', source: 'prov', paint: P['prov-shadow'] });
+    map.addLayer({ id: 'prov-fill', type: 'fill', source: 'prov', paint: P['prov-fill'] });
+    map.addLayer({ id: 'prov-line', type: 'line', source: 'borders', paint: P['prov-line'] });
+    map.addLayer({ id: 'prov-outline', type: 'line', source: 'prov', paint: P['prov-outline'] });
     map.addSource('wards', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
-    map.addLayer({ id: 'ward-fill', type: 'fill', source: 'wards', paint: { 'fill-color': ['case', ['boolean', ['feature-state', 'sel'], false], '#C8341E', ['boolean', ['feature-state', 'hover'], false], '#E9C46A', ['==', ['get', 't'], 'p'], '#F3E3C0', '#F7F2E7'], 'fill-opacity': S.tiles ? ['interpolate', ['linear'], ['zoom'], 7, .7, 11, .12, 14, .02] : .95 } });
-    map.addLayer({ id: 'ward-line', type: 'line', source: 'wards', paint: { 'line-color': '#1B1A17', 'line-width': ['interpolate', ['linear'], ['zoom'], 7, .25, 12, 1], 'line-opacity': .7 } });
-    map.addLayer({ id: 'ward-sel', type: 'line', source: 'wards', filter: ['==', ['id'], -1], paint: { 'line-color': '#1B1A17', 'line-width': 2.5 } });
-    addFixedLabels(); addProvLabels(geo); setupBasemap();
+    map.addLayer({ id: 'ward-fill', type: 'fill', source: 'wards', paint: P['ward-fill'] });
+    map.addLayer({ id: 'ward-line', type: 'line', source: 'wards', paint: P['ward-line'] });
+    map.addLayer({ id: 'ward-sel', type: 'line', source: 'wards', filter: ['==', ['id'], -1], paint: P['ward-sel'] });
+    addFixedLabels(); addProvLabels(geo); setupBasemap(); applyTheme(); clearTimeout(S.loadTm);
     const tip = $('.tip');
     map.on('mousemove', 'prov-fill', e => { if (S.cur) return; const f = e.features[0]; setHover('prov', f.id);
       const p = S.byCode[f.properties.code]; tip.hidden = false; tip.style.left = e.point.x + 'px'; tip.style.top = e.point.y + 'px';
@@ -52,11 +70,31 @@ function initMap(geo) {
       tip.innerHTML = `${esc(f.properties.fullName)}<small>${f.properties.areaKm2 ? fmt(f.properties.areaKm2) + ' km² · ' : ''}bấm để xem các đơn vị cũ</small>`; map.getCanvas().style.cursor = 'pointer'; });
     map.on('mouseleave', 'ward-fill', () => { setHover('wards', null); tip.hidden = true; });
     map.on('click', 'ward-fill', e => { if (S.picking) return; e.preventDefault(); showWard(e.features[0].properties.code); pointInfo(e.lngLat); });
+    map.on('dragstart', () => { if (innerWidth < 860 && sheetState === 'full') sheet('half'); });
     map.on('zoom', () => { const z = map.getZoom(); labels.forEach(l => l.getElement().style.opacity = S.cur ? 0 : (z < 4.6 && l._small ? 0 : 1)); });
     route();
   });
 }
 const hov = {};
+function overlayPaints() { const c = T(); const dim = (a, b) => ['case', ['boolean', ['feature-state', 'dim'], false], a, b]; return {
+  'prov-shadow': { 'line-color': c.ink, 'line-width': 5, 'line-opacity': .12, 'line-translate': [3, 3] },
+  'prov-fill': { 'fill-color': ['case', ['boolean', ['feature-state', 'sel'], false], c.red, ['boolean', ['feature-state', 'hover'], false], c.hov, ['==', ['get', 'merged'], 1], ['interpolate', ['linear'], ['get', 'olds'], 2, c.m2, 3, c.m3], c.paper2],
+    'fill-opacity': S.tiles ? ['interpolate', ['linear'], ['zoom'], 5, dim(.3, .92), 8, dim(.18, .5), 10, dim(.08, .14), 13, dim(0, .04)] : dim(.35, 1) },
+  'prov-line': { 'line-color': c.ink, 'line-width': ['interpolate', ['linear'], ['zoom'], 4, .5, 9, 1.4] },
+  'prov-outline': { 'line-color': c.ink, 'line-width': ['interpolate', ['linear'], ['zoom'], 4, 1, 9, 2] },
+  'ward-fill': { 'fill-color': ['case', ['boolean', ['feature-state', 'sel'], false], c.red, ['boolean', ['feature-state', 'hover'], false], c.hov, ['==', ['get', 't'], 'p'], c.ph, c.paper2], 'fill-opacity': S.tiles ? ['interpolate', ['linear'], ['zoom'], 7, .7, 11, .12, 14, .02] : .95 },
+  'ward-line': { 'line-color': c.ink, 'line-width': ['interpolate', ['linear'], ['zoom'], 7, .25, 12, 1], 'line-opacity': .7 },
+  'ward-sel': { 'line-color': c.ink, 'line-width': 2.5 },
+  'wall-line': { 'line-color': c.wall, 'line-width': ['interpolate', ['linear'], ['zoom'], 9, .4, 14, 1.6], 'line-dasharray': [3, 2], 'line-opacity': .75 },
+  'wall-label': { 'text-color': c.wall, 'text-halo-color': c.halo, 'text-halo-width': 1.8 },
+  'hq-pt': { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 2.5, 14, 6], 'circle-color': c.red, 'circle-stroke-color': c.white, 'circle-stroke-width': 1.5 },
+  'hq-label': { 'text-color': c.red, 'text-halo-color': c.white, 'text-halo-width': 1.5 },
+  'street-line': { 'line-color': c.ink, 'line-width': 5, 'line-dasharray': [1, .6] },
+  'street-pt': { 'circle-radius': 7, 'circle-color': c.red, 'circle-stroke-width': 2.5, 'circle-stroke-color': c.paper2 },
+  'seamask': { 'fill-color': c.mask, 'fill-antialias': false },
+  'bg': { 'background-color': lstate.base || lstate.sat ? c.land : c.sea } }; }
+function applyMapTheme() { const P = overlayPaints(); for (const [id, paint] of Object.entries(P)) if (map.getLayer(id)) for (const [k, v] of Object.entries(paint)) map.setPaintProperty(id, k, v);
+  if (S.tiles) for (const t of S.tiles.sources) for (const l of atlasBasemap(t.id, t.minzoom, t.maxzoom >= 14 ? 24 : t.maxzoom + 1)) if (l.paint && map.getLayer(l.id)) for (const [k, v] of Object.entries(l.paint)) if (/color/.test(k)) map.setPaintProperty(l.id, k, v); }
 function setHover(src, id) { if (hov[src] != null) map.setFeatureState({ source: src, id: hov[src] }, { hover: false }); hov[src] = id; if (id != null) map.setFeatureState({ source: src, id }, { hover: true }); }
 function mk(html, lnglat, cls, anchor = 'center') { const el = document.createElement('div'); el.className = cls; el.innerHTML = html; return new maplibregl.Marker({ element: el, anchor }).setLngLat(lnglat).addTo(map); }
 function addFixedLabels() {
@@ -80,7 +118,7 @@ async function enterProvince(code) {
   selId = +code; $('.map-wrap').classList.add('in'); $('.map-back').hidden = false; labels.forEach(l => l.getElement().style.opacity = 0);
   S.provinces.forEach(q => map.setFeatureState({ source: 'prov', id: +q.code }, { dim: q.code !== code }));
   let g = S.wardsGeo[code]; if (!g) { g = await j(`/geo/wards/${code}.json`); g.features.forEach(f => { f.id = +f.properties.code; f.properties.t = /^Phường/.test(f.properties.fullName) ? 'p' : 'x'; }); S.wardsGeo[code] = g; }
-  if (S.cur !== code) return; map.getSource('wards').setData(g);
+  if (S.cur !== code) return; map.getSource('wards').setData(g); if (wardSel != null) setTimeout(() => highlightWard(String(wardSel).padStart(5, '0'), true), 950);
   const b = bboxOf(g, code); map.fitBounds(b, { padding: innerWidth < 860 ? 20 : 50, duration: 900, essential: true });
 }
 function bboxOf(g, code) { let b = [180, 90, -180, -90];
@@ -103,11 +141,15 @@ document.addEventListener('click', e => { const a = e.target.closest('a[href^="/
 $('.map-back').onclick = () => go(B + '/');
 function setTab(v) { $$('.tabs a').forEach(a => a.setAttribute('aria-selected', a.dataset.view === v)); }
 async function route() {
-  const path = location.pathname.slice(B.length) || '/'; folio.scrollTop = 0; if (innerWidth < 860 && S.routed) scrollTo({ top: 0, behavior: 'smooth' }); S.routed = true;
+  const path = location.pathname.slice(B.length) || '/'; folio.scrollTop = 0; S.routed = true;
+  sheet('half');
   const m = path.match(/^\/tinh\/([a-z0-9-]+)/);
-  if (m) { const p = S.provinces.find(x => x.slug === m[1]); if (p) return showProvince(p.code); }
+  if (m) { const p = S.provinces.find(x => x.slug === m[1]); if (p) return showProvince(p.code).catch(e => { folio.innerHTML = errbox(e.message); }); }
+  const mw = path.match(/^\/xa\/(?:[a-z0-9-]+-)?(\d{5})/);
+  if (mw) { const pc = S.wardProv?.[mw[1]]; if (pc) return showProvince(pc).then(() => showWard(mw[1], true)).then(() => focusWardCard()).catch(e => { folio.innerHTML = errbox(e.message); }); }
   if (S.cur || S.dirty) { S.cur = null; S.dirty = false; leaveProvince(); }
   if (path.startsWith('/doi-dia-chi')) return showConvert();
+  if (path.startsWith('/hang-loat')) return showBulk();
   if (path.startsWith('/chi-muc')) return showIndex();
   showHome();
 }
@@ -131,12 +173,40 @@ function showHome() {
   <div class="sec"><div class="h-s">Bắt đầu</div>
     <div class="hero-grid"><div class="big-n">${merged}</div><p>tỉnh, thành mới được hình thành do hợp nhất. ${34 - merged} đơn vị giữ nguyên tên và địa giới cấp tỉnh. Bấm vào một tỉnh trên bản đồ để xem bên trong.</p></div>
     <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap"><a class="btn" href="${B}/doi-dia-chi" style="text-decoration:none">Đổi địa chỉ cũ → mới</a><a class="btn" href="${B}/chi-muc" style="text-decoration:none;background:var(--paper);color:var(--ink);outline:1.5px solid var(--ink);outline-offset:-1.5px">Chỉ mục 34 tỉnh</a></div></div>
+  <div class="sec"><div class="h-s">Địa chỉ của tôi sau sắp xếp</div>
+    <div class="quick"><div class="search"><textarea id="qa" placeholder="Dán địa chỉ cũ, ví dụ: 60 đường số 1, Phường Tân Thành, Quận Tân Phú, TP.HCM" rows="2"></textarea></div>
+      <div class="row"><button class="btn" id="qa-go">Đổi sang địa chỉ mới</button><button class="btn ghost" id="qa-gps">Dùng vị trí của tôi</button></div>
+      <div class="hint">Vị trí GPS chỉ dùng một lần để tra ranh giới, không được lưu lại.</div><div id="qa-res"></div></div>${recentHTML()}</div>
   <div class="sec"><div class="h-s">Tìm nhanh tỉnh, thành</div><div class="search"><input id="qp" placeholder="Gõ tên tỉnh mới hoặc cũ, ví dụ: Quảng Nam" autocomplete="off"><span class="n" id="qpn"></span></div><ul class="idx" id="qpl"></ul></div>${foot()}`;
   const inp = $('#qp'), ul = $('#qpl');
   inp.oninput = () => { const q = fold(inp.value); if (!q) { ul.innerHTML = ''; return; }
     const r = S.provinces.filter(p => fold(p.full + ' ' + p.oldProvinces.join(' ')).includes(q)).slice(0, 6);
     ul.innerHTML = r.map(rowIdx).join(''); $('#qpn').textContent = r.length + ' kết quả'; };
+  bindRecent(); const qa = $('#qa'), qr = $('#qa-res');
+  const goQa = async () => { const q = qa.value.trim(); if (q.length < 3) return qa.focus(); qr.innerHTML = '<div class="meta"><span class="spin"></span>Đang tra…</div>';
+    try { const it = (await api(`/api/search?mode=old&q=${encodeURIComponent(q)}`))[0]; if (!it) { qr.innerHTML = '<div class="warnbox">Không nhận ra xã/phường cũ trong địa chỉ. Hãy ghi rõ xã, huyện, tỉnh.</div>'; return; }
+      go(B + `/doi-dia-chi?cu=${encodeURIComponent(it.id)}${it.street ? '&dc=' + encodeURIComponent(it.street) : ''}`); } catch { qr.innerHTML = '<div class="warnbox">Không tải được. Thử lại sau.</div>'; } };
+  $('#qa-go').onclick = goQa; qa.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); goQa(); } };
+  $('#qa-gps').onclick = () => { if (!navigator.geolocation) return toast('Trình duyệt không hỗ trợ định vị', true); qr.innerHTML = '<div class="meta"><span class="spin"></span>Đang lấy vị trí…</div>';
+    navigator.geolocation.getCurrentPosition(async p => { const { latitude: lat, longitude: lon, accuracy } = p.coords;
+      try { const r = await api(`/api/locate?lat=${lat}&lon=${lon}`); if (!r.code) { qr.innerHTML = `<div class="warnbox">${esc(r.note)}</div>`; return; } const o = await api('/api/convert?new=' + r.code);
+        qr.innerHTML = `<div class="cand def" style="margin-top:12px"><div class="chead"><span class="kick">Bạn đang ở (±${Math.round(accuracy)} m)</span><span class="stamp ok">GPS</span></div><div class="nm">${esc(r.name)}</div><div class="pv">${esc(r.province)}</div>
+          <div class="meta">Hình thành từ ${o.from.length} đơn vị cũ: ${o.from.slice(0, 4).map(f => esc(f.w)).join(', ')}${o.from.length > 4 ? '…' : ''}</div><div class="acts"><a href="${B}/tinh/${r.slug}?xa=${r.code}">Xem trên bản đồ</a><a href="${B}/doi-dia-chi?moi=${r.code}">Chi tiết</a></div></div>`;
+        addRecent(`${r.name}, ${short(r.province)}`, `/xa/${wardSlug(r.name)}-${r.code}`); if (map) { showPoint(lon, lat); } } catch { qr.innerHTML = '<div class="warnbox">Không xác định được. Thử lại sau.</div>'; }
+    }, e => { qr.innerHTML = ''; toast('Không lấy được vị trí: ' + geoErr(e), true); }, { enableHighAccuracy: true, timeout: 15000 }); };
 }
+function focusWardCard() { if (innerWidth < 860) { sheet('full'); setTimeout(() => $('#wdet')?.scrollIntoView({ block: 'start', behavior: 'smooth' }), 400); } }
+const geoErr = e => e.code === 1 ? 'bạn chưa cho phép truy cập vị trí.' : e.code === 2 ? 'không có tín hiệu định vị.' : 'hết thời gian chờ.';
+const wardSlug = n => fold(n).replace(/ /g, '-');
+// ---------- MOBILE SHEET ----------
+let sheetState = 'half';
+function sheet(st) { if (innerWidth >= 860) return; sheetState = st; folio.classList.remove('half', 'full'); if (st !== 'peek') folio.classList.add(st); $('.sheet-hint').hidden = st !== 'peek'; if (st !== 'full') folio.scrollTop = 0; }
+(() => { let y0 = null, h0 = 0, moved = false;
+  folio.addEventListener('touchstart', e => { if (innerWidth >= 860) return; const t = e.touches[0]; const top = folio.getBoundingClientRect().top; if (t.clientY - top > 30 && (sheetState === 'full' && folio.scrollTop > 0)) return; y0 = t.clientY; h0 = top; moved = false; }, { passive: true });
+  folio.addEventListener('touchmove', e => { if (y0 == null) return; const dy = e.touches[0].clientY - y0; if (Math.abs(dy) < 6) return; if (sheetState === 'full' && dy < 0) { y0 = null; return; } moved = true; folio.classList.add('drag'); const st = folio.parentElement.getBoundingClientRect().top; folio.style.transform = `translateY(${Math.max(0, h0 - st + dy)}px)`; }, { passive: true });
+  folio.addEventListener('touchend', e => { if (y0 == null) return; folio.classList.remove('drag'); folio.style.transform = ''; if (moved) { const dy = e.changedTouches[0].clientY - y0; const order = ['peek', 'half', 'full']; let i = order.indexOf(sheetState); if (dy < -40) i = Math.min(2, i + 1); else if (dy > 40) i = Math.max(0, i - 1); sheet(order[i]); } y0 = null; });
+  folio.addEventListener('click', e => { if (innerWidth < 860 && sheetState !== 'full' && e.clientY - folio.getBoundingClientRect().top < 26) sheet(sheetState === 'peek' ? 'half' : 'full'); });
+})();
 const rowIdx = p => `<li><a href="${B}/tinh/${p.slug}"><span class="no">${p.code}</span><span><span class="nm">${p.merged ? '<i class="mk"></i>' : ''}${esc(short(p.full))}</span><span class="ol">${p.merged ? 'Từ ' + p.oldProvinces.map(short).join(' + ') : 'Giữ nguyên'}</span></span><span class="ct">${p.wardCount}<small>xã/phường</small></span></a></li>`;
 function showIndex() {
   setTab('index'); setTitle('Chỉ mục 34 tỉnh, thành');
@@ -158,7 +228,8 @@ function leaderHTML(l) {
 async function showProvince(code) {
   setTab('map'); const p = S.byCode[code]; const first = S.cur !== code; S.cur = code; setTitle(`${p.full} sau sắp xếp`);
   if (first) { map && enterProvince(code); }
-  let d = S.detail[code]; if (!d) { folio.innerHTML = `<div class="sec"><div class="kicker"><span>Mã ${p.code}</span></div><h1 class="h-xl">${esc(short(p.full))}</h1></div>`; d = S.detail[code] = await api('/api/province/' + code); }
+  let d = S.detail[code]; if (!d) { folio.innerHTML = `<div class="sec"><div class="kicker"><span>Mã ${p.code}</span></div><h1 class="h-xl">${esc(short(p.full))}</h1></div>` + skeleton();
+    try { d = S.detail[code] = await api('/api/province/' + code); } catch (e) { if (S.cur === code) folio.innerHTML = `<div class="sec"><h1 class="h-xl">${esc(short(p.full))}</h1></div>` + errbox(); throw e; } }
   if (S.cur !== code) return;
   const L = Object.fromEntries(d.leaders.map(l => [l.role, l]));
   const sum = d.facts.find(f => f.kind === 'summary'); const facts = d.facts.filter(f => f.kind !== 'summary');
@@ -184,15 +255,17 @@ async function showProvince(code) {
     $('#wn').textContent = r.length; $('#wl').innerHTML = r.map(w => `<li data-c="${w.code}"><span class="t">${w.type === 'Phường' ? 'P' : w.type === 'Xã' ? 'X' : 'ĐK'}</span>${esc(w.name)}<span class="c">${w.code}</span></li>`).join(''); };
   $('#wq').oninput = draw; $('#wf').onclick = e => { const b = e.target.closest('button'); if (!b) return; t = b.dataset.t; $$('#wf button').forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); };
   $('#wl').onclick = e => { const li = e.target.closest('li'); if (li) showWard(li.dataset.c, true); }; draw();
-  const wq = new URLSearchParams(location.search).get('xa'); if (wq) setTimeout(() => showWard(wq, true), 900);
+  const wq = new URLSearchParams(location.search).get('xa'); if (wq) setTimeout(() => showWard(wq, true).then(focusWardCard), 900);
 }
 async function showWard(code, fly) {
   if (!S.cur) return; highlightWard(code, fly !== false);
-  const r = await api('/api/convert?new=' + code); const box = $('#wdet'); if (!box) return;
+  const box0 = $('#wdet'); if (box0) box0.innerHTML = '<div class="meta"><span class="spin"></span>Đang tải…</div>';
+  let r; try { r = await api('/api/convert?new=' + code); } catch { if ($('#wdet')) $('#wdet').innerHTML = '<div class="warnbox">Không tải được dữ liệu xã này.</div>'; return; } const box = $('#wdet'); if (!box) return;
+  addRecent(`${r.to.name}, ${short(r.to.province)}`, `/xa/${wardSlug(r.to.name)}-${code}`); if (S.cur && !/\/doi-dia-chi/.test(location.pathname)) history.replaceState({}, '', B + `/xa/${wardSlug(r.to.name)}-${code}`); setTitle(`${r.to.name}, ${r.to.province}`);
   box.innerHTML = `<div class="cand def" style="margin:12px 0"><div class="kicker"><span>Mã ${code}</span><span>${r.from.length} đơn vị cũ</span></div><div class="nm" style="margin-top:6px">${esc(r.to.name)}</div>
    <div class="meta">Hình thành từ:</div><ul class="olds">${r.from.map(o => `<li><span>${esc(o.w)}<br><small>${esc(o.d)}, ${esc(short(o.p))}</small></span>${o.split ? '<span class="stamp mid">một phần</span>' : ''}</li>`).join('')}</ul>
    <div class="acts"><a href="${B}/doi-dia-chi?moi=${code}">Mở trong bộ đổi địa chỉ →</a></div></div>`;
-  if (innerWidth >= 860) box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  if (innerWidth >= 860) box.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); else sheet('half');
 }
 // ---------- CONVERTER ----------
 function showConvert() {
@@ -203,7 +276,7 @@ function showConvert() {
     <div class="seg" id="seg"><button data-m="old" aria-pressed="${mode === 'old'}">Cũ → Mới</button><button data-m="new" aria-pressed="${mode === 'new'}">Mới → Cũ</button></div>
     <div class="ac"><div class="search"><input id="cq" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="cl" autocomplete="off"></div><ul id="cl" role="listbox" hidden></ul></div>
     <div class="search street"><input id="st" placeholder="Số nhà, đường, thôn/xóm (tuỳ chọn, giữ nguyên)" autocomplete="off"></div>
-    <div class="result" id="res"></div></div>
+    <div class="result" id="res"></div>${recentHTML()}</div>
   <div class="sec"><div class="h-s">Lưu ý</div><p class="meta" style="font-size:13px">Bảng đổi địa chỉ lấy từ thư viện mở vietnamadminunits, dựng theo các nghị quyết của UBTVQH về sắp xếp đơn vị hành chính cấp xã năm 2025. Với xã bị chia tách, địa chỉ mới phụ thuộc vào vị trí thật của nhà bạn (thôn/ấp). Hãy đối chiếu với nghị quyết của tỉnh hoặc hỏi UBND xã. Ô “mặc định” là phương án thư viện đề xuất, thường là nơi có phần diện tích lớn nhất hoặc trụ sở.</p></div>${foot()}`;
   let m = mode; const inp = $('#cq'), ul = $('#cl'); let items = [], ai = -1, tm;
   const ph = () => inp.placeholder = m === 'old' ? 'VD: Điện Bàn, Quảng Nam' : 'VD: Phường Hội An, Đà Nẵng';
@@ -219,6 +292,9 @@ function showConvert() {
     else if (e.key === 'Enter') { e.preventDefault(); pick(items[ai < 0 ? 0 : ai]); } else if (e.key === 'Escape') close(); };
   ul.onmousedown = e => { const li = e.target.closest('li[data-i]'); if (li) { e.preventDefault(); pick(items[+li.dataset.i]); } };
   inp.onblur = () => setTimeout(close, 150); let tst;
+  // paste a whole address ("12 Lê Lợi, P. Bến Nghé, Q.1, TP.HCM"): pick the best match straight away
+  inp.onpaste = () => setTimeout(async () => { const q = inp.value.trim(); if (m !== 'old' || !q.includes(',')) return; try { const it = (await api(`/api/search?mode=old&q=${encodeURIComponent(q)}`))[0]; if (it) pick(it); else toast('Không nhận ra xã/phường trong địa chỉ này. Thử gõ tên xã cũ.', true); } catch {} }, 30);
+  bindRecent();
   $('#st').oninput = () => { if (!S.lastRes) return; render(S.lastRes); clearTimeout(tst); if (S.lastRes.mode === 'old' && S.lastRes.split) tst = setTimeout(() => load('old', S.lastRes.from.id, true), 450); };
   if (qs.get('dc')) $('#st').value = qs.get('dc');
   if (qs.has('cu')) load('old', qs.get('cu')); else if (qs.has('moi')) load('new', qs.get('moi'));
@@ -232,7 +308,8 @@ function showConvert() {
         map.setFilter('ward-sel', ['in', ['id'], ['literal', codes]]); const fs = g.features.filter(f => codes.includes(f.id)); const R = r.resolve; const pts = R?.geom ? R.geom.flat() : R?.point ? [R.point] : null;
         if (pts) { const xs = pts.map(q => q[0]), ys = pts.map(q => q[1]); map.fitBounds([[Math.min(...xs) - .006, Math.min(...ys) - .006], [Math.max(...xs) + .006, Math.max(...ys) + .006]], { padding: 40, maxZoom: 14.5, duration: 900 }); }
         else if (fs.length) map.fitBounds(bboxOf({ features: fs }), { padding: 70, maxZoom: 11.5, duration: 900 }); }
-    } catch { $('#res').innerHTML = '<div class="warnbox">Không tìm thấy mã này.</div>'; }
+      addRecent(mm === 'old' ? `${r.from.w}, ${r.from.d}, ${short(r.from.p)}` : `${r.to.name}, ${short(r.to.province)}`, u);
+    } catch (e) { $('#res').innerHTML = `<div class="warnbox">${/404/.test(e.message) ? 'Không tìm thấy mã này.' : 'Không tải được dữ liệu. Kiểm tra mạng rồi thử lại.'}</div>`; }
   }
   renderHook = rr => render(rr);
   function render(r) {
@@ -265,8 +342,8 @@ function drawStreet(R) {
   if (R?.geom) fc.features.push({ type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: R.geom } });
   if (R?.point) fc.features.push({ type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: R.point } });
   if (!map.getSource('street')) { map.addSource('street', { type: 'geojson', data: fc });
-    map.addLayer({ id: 'street-line', type: 'line', source: 'street', paint: { 'line-color': '#1B1A17', 'line-width': 5, 'line-dasharray': [1, .6] } });
-    map.addLayer({ id: 'street-pt', type: 'circle', source: 'street', filter: ['==', ['geometry-type'], 'Point'], paint: { 'circle-radius': 7, 'circle-color': '#C8341E', 'circle-stroke-width': 2.5, 'circle-stroke-color': '#F7F2E7' } }); }
+    const P = overlayPaints(); map.addLayer({ id: 'street-line', type: 'line', source: 'street', paint: P['street-line'] });
+    map.addLayer({ id: 'street-pt', type: 'circle', source: 'street', filter: ['==', ['geometry-type'], 'Point'], paint: P['street-pt'] }); }
   else map.getSource('street').setData(fc);
 }
 function showPoint(lon, lat) { drawStreet({ point: [lon, lat] }); map.flyTo({ center: [lon, lat], zoom: Math.max(map.getZoom(), 14), duration: 700 }); }
@@ -279,18 +356,18 @@ async function resolvePoint(r, lon, lat, how) {
 }
 let renderHook = () => {};
 function startPick(r) {
-  if (!map) return; const w = $('.map-wrap'); w.classList.add('picking'); if (innerWidth < 860) scrollTo({ top: 0, behavior: 'smooth' });
+  if (!map) return; const w = $('.map-wrap'); w.classList.add('picking'); if (innerWidth < 860) sheet('peek');
   const hint = document.createElement('div'); hint.className = 'pickhint'; hint.textContent = 'Chạm vào đúng vị trí nhà trên bản đồ'; w.appendChild(hint); S.picking = true;
-  map.once('click', e => { setTimeout(() => S.picking = false, 50); w.classList.remove('picking'); hint.remove(); resolvePoint(r, e.lngLat.lng, e.lngLat.lat, 'Xác định theo điểm chọn trên bản đồ'); });
+  map.once('click', e => { setTimeout(() => S.picking = false, 50); w.classList.remove('picking'); hint.remove(); sheet('half'); resolvePoint(r, e.lngLat.lng, e.lngLat.lat, 'Xác định theo điểm chọn trên bản đồ'); });
 }
 function geoLoc(r) {
-  if (!navigator.geolocation) return alert('Trình duyệt không hỗ trợ định vị');
-  navigator.geolocation.getCurrentPosition(p => resolvePoint(r, p.coords.longitude, p.coords.latitude, `Xác định theo vị trí GPS (±${Math.round(p.coords.accuracy)} m)`), e => alert('Không lấy được vị trí: ' + e.message), { enableHighAccuracy: true, timeout: 15000 });
+  if (!navigator.geolocation) return toast('Trình duyệt không hỗ trợ định vị', true);
+  navigator.geolocation.getCurrentPosition(p => resolvePoint(r, p.coords.longitude, p.coords.latitude, `Xác định theo vị trí GPS (±${Math.round(p.coords.accuracy)} m)`), e => toast('Không lấy được vị trí: ' + geoErr(e), true), { enableHighAccuracy: true, timeout: 15000 });
 }
 // ---------- BASE MAP ----------
 function absUrl(u) { return /^https?:/.test(u) ? u : location.origin + B + '/tiles/' + u; }
 function baseStyle() {
-  const st = { version: 8, glyphs: location.origin + B + '/glyphs/{fontstack}/{range}.pbf', sources: {}, layers: [{ id: 'bg', type: 'background', paint: { 'background-color': S.tiles ? '#E2DED6' : '#DCE3DE' } }] };
+  const st = { version: 8, glyphs: location.origin + B + '/glyphs/{fontstack}/{range}.pbf', sources: {}, layers: [{ id: 'bg', type: 'background', paint: { 'background-color': S.tiles ? T().land : T().sea } }] };
   if (!S.tiles) return st;
   if (!S.pm) { S.pm = new pmtiles.Protocol(); maplibregl.addProtocol('pmtiles', S.pm.tile); }
   st.sources.sat = window.atlasSatellite;
@@ -298,7 +375,7 @@ function baseStyle() {
   for (const t of S.tiles.sources) { st.sources[t.id] = { type: 'vector', url: 'pmtiles://' + absUrl(t.url) }; st.layers.push(...atlasBasemap(t.id, t.minzoom, t.maxzoom >= 14 ? 24 : t.maxzoom + 1)); }
   // sovereignty: open-sea mask east of the OSM extract (Biển Đông always rendered as water, no foreign land/labels)
   st.sources.seamask = { type: 'geojson', data: { type: 'Feature', geometry: { type: 'MultiPolygon', coordinates: [[[[114.4, 4.5], [117.8, 4.5], [117.8, 12.6], [114.4, 12.6], [114.4, 4.5]]], [[[114.4, 12.6], [119.6, 12.6], [119.6, 21.2], [114.4, 21.2], [114.4, 12.6]]]] } } };
-  st.layers.splice(1, 0, { id: 'seamask', type: 'fill', source: 'seamask', paint: { 'fill-color': '#BFD3D0', 'fill-antialias': false } });
+  st.layers.splice(1, 0, { id: 'seamask', type: 'fill', source: 'seamask', paint: overlayPaints()['seamask'] });
   return st;
 }
 const LAYERS = { base: 'Nền bản đồ (OSM)', sat: 'Ảnh vệ tinh (2016)', prov: 'Ranh giới tỉnh', ward: 'Ranh giới xã', hq: 'Trụ sở UBND xã' };
@@ -307,12 +384,12 @@ function setupBasemap() {
   const firstRoad = map.getStyle().layers.find(l => /-(building|road-|path)/.test(l.id));
   if (firstRoad) { map.moveLayer('prov-shadow', firstRoad.id); map.moveLayer('prov-fill', firstRoad.id); map.moveLayer('ward-fill', firstRoad.id); }
   map.addSource('wards-all', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
-  map.addLayer({ id: 'wall-line', type: 'line', source: 'wards-all', minzoom: 9, paint: { 'line-color': '#7A3B2E', 'line-width': ['interpolate', ['linear'], ['zoom'], 9, .4, 14, 1.6], 'line-dasharray': [3, 2], 'line-opacity': .75 } }, 'prov-line');
+  const P = overlayPaints(); map.addLayer({ id: 'wall-line', type: 'line', source: 'wards-all', minzoom: 9, paint: P['wall-line'] }, 'prov-line');
   map.addLayer({ id: 'wall-label', type: 'symbol', source: 'wards-all', minzoom: 11, layout: { 'text-field': ['get', 'fullName'], 'text-font': ['Be Vietnam Pro Bold'], 'text-size': ['interpolate', ['linear'], ['zoom'], 11, 10, 15, 14], 'text-transform': 'uppercase', 'text-letter-spacing': .1, 'text-max-width': 9, 'text-padding': 20 },
-    paint: { 'text-color': '#7A3B2E', 'text-halo-color': 'rgba(247,242,231,.9)', 'text-halo-width': 1.8 } });
+    paint: P['wall-label'] });
   map.addSource('hq', { type: 'geojson', data: B + '/data/hq.geojson' });
-  map.addLayer({ id: 'hq-pt', type: 'circle', source: 'hq', minzoom: 8, layout: { visibility: 'none' }, paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 2.5, 14, 6], 'circle-color': '#C8341E', 'circle-stroke-color': '#fff', 'circle-stroke-width': 1.5 } });
-  map.addLayer({ id: 'hq-label', type: 'symbol', source: 'hq', minzoom: 12, layout: { visibility: 'none', 'text-field': ['concat', 'UBND ', ['get', 'name']], 'text-font': ['Be Vietnam Pro Bold'], 'text-size': 11, 'text-offset': [0, 1], 'text-anchor': 'top' }, paint: { 'text-color': '#C8341E', 'text-halo-color': '#fff', 'text-halo-width': 1.5 } });
+  map.addLayer({ id: 'hq-pt', type: 'circle', source: 'hq', minzoom: 8, layout: { visibility: 'none' }, paint: P['hq-pt'] });
+  map.addLayer({ id: 'hq-label', type: 'symbol', source: 'hq', minzoom: 12, layout: { visibility: 'none', 'text-field': ['concat', 'UBND ', ['get', 'name']], 'text-font': ['Be Vietnam Pro Bold'], 'text-size': 11, 'text-offset': [0, 1], 'text-anchor': 'top' }, paint: P['hq-label'] });
   // layer panel
   const pan = document.createElement('div'); pan.className = 'lyr';
   pan.innerHTML = `<button class="lyr-b" aria-expanded="false" title="Lớp bản đồ">Lớp</button><div class="lyr-p" hidden>${Object.entries(LAYERS).filter(([k]) => S.tiles || !['base', 'sat'].includes(k)).map(([k, t]) => `<label><input type="checkbox" data-k="${k}" ${lstate[k] ? 'checked' : ''}> ${t}</label>`).join('')}</div>`;
@@ -328,7 +405,7 @@ function vis(ids, on) { ids.forEach(id => map.getLayer(id) && map.setLayoutPrope
 function applyLayers() {
   const all = map.getStyle().layers.map(l => l.id); const baseIds = S.tiles ? all.filter(id => S.tiles.sources.some(t => id.startsWith(t.id + '-'))) : [];
   vis(baseIds, lstate.base); vis(['sat'], lstate.sat); vis(['prov-line', 'prov-outline', 'prov-shadow'], lstate.prov); vis(['wall-line', 'wall-label'], lstate.ward); vis(['hq-pt', 'hq-label'], lstate.hq);
-  map.setPaintProperty('bg', 'background-color', lstate.base || lstate.sat ? '#E2DED6' : '#DCE3DE'); loadWardsAll();
+  map.setPaintProperty('bg', 'background-color', lstate.base || lstate.sat ? T().land : T().sea); loadWardsAll();
 }
 const pbbox = {};
 async function loadWardsAll() {
@@ -367,11 +444,67 @@ function placeSearch(sb) {
     map.flyTo({ center: [r[1], r[2]], zoom: r[3] === 's' ? 16 : 17, duration: 1200 }); map.once('moveend', () => pointInfo({ lng: r[1], lat: r[2] })); };
   inp.onblur = () => setTimeout(() => ul.hidden = true, 150);
 }
+// ---------- BULK ----------
+function csvEsc(v) { v = String(v ?? ''); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+function parseLines(txt) { // one address per line; CSV with header "address" column also accepted
+  const lines = txt.split(/\r?\n/).map(l => l.trim()).filter(Boolean); if (!lines.length) return [];
+  const head = fold(lines[0]); if (/^(dia chi|address)\b/.test(head) && lines.length > 1) return lines.slice(1).map(l => l.replace(/^"(.*)"$/, '$1').replace(/""/g, '"'));
+  return lines; }
+async function convertOne(q) {
+  const its = await api(`/api/search?mode=old&q=${encodeURIComponent(q.slice(0, 200))}`); const it = its[0];
+  if (!it) return { old: q, new: '', status: 'bad', note: 'Không nhận ra xã/phường cũ' };
+  const r = await api(`/api/convert?old=${encodeURIComponent(it.id)}${it.street ? '&street=' + encodeURIComponent(it.street) : ''}`);
+  const pre = it.street ? it.street + ', ' : ''; const R = r.resolve; const hit = R?.code && r.to.find(t => t.code === R.code); const same = its.filter(x => fold(x.w) === fold(it.w)); const dup = same.length > 1 ? ' · có ' + same.length + ' xã cũ cùng tên (' + same.slice(0, 3).map(x => x.d).join(', ') + '), đã lấy xã khớp nhất' : '';
+  if (hit) return { old: q, new: `${pre}${hit.name}, ${hit.province}`, code: hit.code, status: R.confidence === 'cao' && !dup ? 'ok' : 'warn', note: R.label + dup };
+  if (r.split) return { old: q, new: r.to.map(t => `${t.name}, ${t.province}`).join(' | '), code: r.to.map(t => t.code).join('|'), status: 'warn', note: `Xã cũ chia cho ${r.to.length} đơn vị mới; cần số nhà/đường hoặc chọn trên bản đồ` };
+  return { old: q, new: `${pre}${r.to[0].name}, ${r.to[0].province}`, code: r.to[0].code, status: dup ? 'warn' : 'ok', note: dup.replace(/^ · /, '') };
+}
+function showBulk() {
+  setTab('bulk'); setTitle('Đổi địa chỉ hàng loạt'); sheet('full');
+  folio.innerHTML = `<div class="sec bulk"><div class="kicker"><span>Công cụ</span><span>Tối đa 500 dòng / lần</span></div><h1 class="h-l">Đổi địa chỉ hàng loạt</h1>
+    <p class="lede" style="font-size:16px">Dán danh sách địa chỉ cũ, mỗi dòng một địa chỉ (hoặc tải lên file CSV/TXT). Kết quả tải về dạng CSV mở được bằng Excel.</p>
+    <textarea id="bt" placeholder="60 đường số 1, Phường Tân Thành, Quận Tân Phú, TP.HCM&#10;Phường Phúc Xá, Quận Ba Đình, Hà Nội&#10;…"></textarea>
+    <label class="drop" id="bdrop">Kéo thả hoặc bấm để chọn file .csv / .txt<input type="file" id="bf" accept=".csv,.txt,text/csv,text/plain"></label>
+    <div class="pickers" style="margin-top:14px"><button class="btn" id="brun">Chuyển đổi</button><button class="btn ghost" id="bdl" hidden>Tải CSV kết quả</button><button class="btn ghost" id="bcp" hidden>Sao chép bảng</button></div>
+    <div class="prog" id="bprog" hidden><i style="width:0"></i></div><div id="bsum" class="meta"></div><div class="btbl-wrap" id="bout"></div></div>
+  <div class="sec"><div class="h-s">Dùng qua API</div><p class="meta" style="font-size:13.5px;margin-bottom:10px">Doanh nghiệp cần chuẩn hoá địa chỉ khách hàng có thể gọi trực tiếp. Không cần khoá cho tới 200 địa chỉ/ngày mỗi IP; cần nhiều hơn thì dùng khoá API (header <code>X-Api-Key</code>).</p>
+    <div class="code">POST ${location.origin}${B}/api/bulk
+Content-Type: application/json
+X-Api-Key: &lt;khoá, tuỳ chọn&gt;
+
+{"addresses": ["60 đường số 1, Phường Tân Thành, Quận Tân Phú, TP.HCM"]}
+
+→ {"results": [{"old": "…", "new": "60 đường số 1, Phường Phú Thọ Hoà, Thành phố Hồ Chí Minh",
+                 "code": "27022", "status": "ok", "note": "…"}],
+   "quota": {"used": 1, "limit": 200}}</div>
+    <p class="meta" style="margin-top:10px">Liên hệ qua <a href="https://gooduselabs.com" target="_blank" rel="noopener">gooduselabs.com</a> để nhận khoá API.</p></div>${foot()}`;
+  const ta = $('#bt'), drop = $('#bdrop'), fi = $('#bf'); let rows = [];
+  const readFile = f => { if (!f) return; f.text().then(t => { ta.value = t; toast(`Đã nạp ${parseLines(t).length} dòng từ ${f.name}`); }); };
+  fi.onchange = () => readFile(fi.files[0]);
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); if (ev === 'drop') readFile(e.dataTransfer.files[0]); }));
+  const draw = () => { const ok = rows.filter(r => r.status === 'ok').length, warn = rows.filter(r => r.status === 'warn').length, bad = rows.length - ok - warn;
+    $('#bsum').innerHTML = `<b>${rows.length}</b> dòng · <span style="color:var(--jade)">${ok} chắc chắn</span> · <span style="color:var(--amber)">${warn} cần kiểm tra</span> · <span style="color:var(--red)">${bad} không nhận ra</span>`;
+    $('#bout').innerHTML = `<table class="btbl"><thead><tr><th>#</th><th>Địa chỉ cũ</th><th>Địa chỉ mới</th><th>Ghi chú</th></tr></thead><tbody>${rows.map((r, i) => `<tr class="${r.status}"><td>${i + 1}</td><td class="old">${esc(r.old)}</td><td class="new">${esc(r.new) || '—'}</td><td class="meta" style="margin:0">${esc(r.note)}</td></tr>`).join('')}</tbody></table>`;
+    $('#bdl').hidden = $('#bcp').hidden = !rows.length; };
+  $('#brun').onclick = async () => { const list = parseLines(ta.value).slice(0, 500); if (!list.length) return toast('Chưa có địa chỉ nào.', true);
+    rows = []; $('#bprog').hidden = false; $('#brun').disabled = true; const bar = $('#bprog i');
+    for (let i = 0; i < list.length; i++) { try { rows.push(await convertOne(list[i])); } catch { rows.push({ old: list[i], new: '', status: 'bad', note: 'Lỗi tải dữ liệu' }); } bar.style.width = (100 * (i + 1) / list.length) + '%'; if (i % 10 === 9 || i === list.length - 1) draw(); }
+    $('#brun').disabled = false; toast(`Xong ${rows.length} dòng`); };
+  const csv = () => '\uFEFF' + ['dia_chi_cu,dia_chi_moi,ma_xa_moi,trang_thai,ghi_chu', ...rows.map(r => [r.old, r.new, r.code || '', r.status, r.note].map(csvEsc).join(','))].join('\n');
+  $('#bdl').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv()], { type: 'text/csv;charset=utf-8' })); a.download = `atlas34-doi-dia-chi-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); };
+  $('#bcp').onclick = () => { navigator.clipboard?.writeText(rows.map(r => `${r.old}\t${r.new}\t${r.note}`).join('\n')).then(() => toast('Đã chép bảng (dán vào Excel)')); };
+}
 // ---------- BOOT ----------
-Promise.all([j('/data/provinces.json'), j('/geo/provinces.json'), j('/tiles/tiles.json').catch(() => null)]).then(([d, geo, tiles]) => { S.tiles = tiles && window.atlasBasemap ? tiles : null;
-  S.provinces = d.provinces; S.stats = d.stats; j('/data/mapping.json').then(m => { S.wardName = Object.fromEntries(Object.entries(m.wards).map(([c, v]) => [c, v.name])); }).catch(() => {}); d.provinces.forEach(p => S.byCode[p.code] = p);
+// tiles manifest is only trusted if the first archive is actually reachable (Range request); otherwise fall back to the plain atlas style
+const tilesOk = async t => { if (!t?.sources?.length) return null; try { const r = await fetch(absUrl(t.sources[0].url), { headers: { Range: 'bytes=0-15' } }); return r.ok ? t : null; } catch { return null; } };
+folio.innerHTML = skeleton('<div class="skel l" style="width:40%"></div>');
+Promise.all([j('/data/provinces.json'), j('/geo/provinces.json'), j('/tiles/tiles.json').then(tilesOk).catch(() => null), j('/data/mapping.json').catch(() => null)]).then(([d, geo, tiles, m]) => { S.tiles = tiles && window.atlasBasemap ? tiles : null;
+  S.provinces = d.provinces; S.stats = d.stats; if (m) { S.wardName = {}; S.wardProv = {}; for (const [c, v] of Object.entries(m.wards)) { S.wardName[c] = v.name; S.wardProv[c] = v.p; } } d.provinces.forEach(p => S.byCode[p.code] = p);
   const start = () => window.maplibregl ? initMap(geo) : setTimeout(start, 30); start();
-});
+  // if the style never finishes loading (broken tiles), retry once without the basemap so the site stays usable
+  S.loadTm = setTimeout(() => { if (map && !map.getLayer('prov-fill')) { console.warn('basemap timeout, retrying without tiles'); map.remove(); S.tiles = null; initMap(geo); toast('Không tải được nền đường phố; hiển thị bản đồ hành chính.', true); } }, 12000);
+}).catch(e => { folio.innerHTML = errbox(e.message); });
 })();
 
 // collapse compact attribution on load (mobile)

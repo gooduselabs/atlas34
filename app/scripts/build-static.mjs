@@ -25,11 +25,11 @@ try {
   // 3. pages
   const fix = h => h.replace(/(href|src)="\/(?!\/)/g, `$1="${BASE}/`)
     .replace('<script>', `<script>window.__BASE=${JSON.stringify(BASE)};</script><script src="${BASE}/static-api.js" defer></script><script>`);
-  const pages = ['/', '/doi-dia-chi', '/chi-muc', ...provinces.map(p => '/tinh/' + p.slug)];
-  for (const u of pages) w((u === '/' ? '' : u.slice(1) + '/') + 'index.html', fix(await (await fetch(H + u)).text()));
+  const sm = await (await fetch(H + '/sitemap.xml')).text(); const pages = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => new URL(m[1]).pathname.slice(BASE.length) || '/');
+  const pool = 8; let i = 0; await Promise.all(Array.from({ length: pool }, async () => { while (i < pages.length) { const u = pages[i++]; w((u === '/' ? '' : u.slice(1) + '/') + 'index.html', fix(await (await fetch(H + u)).text())); } }));
   w('404.html', fix(await (await fetch(H + '/')).text()).replace('<head>', `<head><base href="${BASE}/">`));
   for (const c of ['vn', ...provinces.map(p => p.code)]) w(`og/${c}.png`, Buffer.from(await (await fetch(`${H}/og/${c}.png`)).arrayBuffer()));
-  w('sitemap.xml', await (await fetch(H + '/sitemap.xml')).text());
+  w('sitemap.xml', sm);
   w('robots.txt', `User-agent: *\nSitemap: ${SITE}${BASE}/sitemap.xml\n`); w('.nojekyll', '');
   console.log('static build ok:', pages.length, 'pages,', Object.keys(osm).length, 'OSM shards ->', OUT);
 } finally { srv.kill(); }

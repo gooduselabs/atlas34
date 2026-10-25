@@ -37,3 +37,27 @@ test('unknown street -> none, asks map', async () => { const d = await conv('270
 test('locate point restricted to candidates', async () => { const r = (await j('/api/locate?lat=10.7901&lon=106.6318&old=27022')).d; assert.equal(r.code, '27022');
   const far = (await j('/api/locate?lat=21.03&lon=105.85&old=27022')).d; assert.equal(far.code, null); });
 test('locate anywhere (Hoàn Kiếm area)', async () => { const r = (await j('/api/locate?lat=21.0287&lon=105.8523')).d; assert.equal(r.provinceCode, '01'); });
+// ---- v2: bulk API, API keys, ward pages ----
+const post = (u, body, h = {}) => fetch(B + u, { method: 'POST', headers: { 'content-type': 'application/json', ...h }, body: JSON.stringify(body) }).then(async r => ({ s: r.status, d: await r.json() }));
+test('bulk: full address, split ward and garbage', async () => {
+  const { s, d } = await post('/api/bulk', { addresses: ['60 đường số 1, Phường Tân Thành, Quận Tân Phú, TP.HCM', 'Xã Bát Tràng, Gia Lâm, Hà Nội', 'abc xyz'] });
+  assert.equal(s, 200); assert.equal(d.results.length, 3);
+  assert.equal(d.results[0].status, 'ok'); assert.match(d.results[0].new, /^60 đường số 1, Phường Phú Thọ Ho/); assert.equal(d.results[0].code, '27022');
+  assert.equal(d.results[1].status, 'warn'); assert.ok(d.results[1].code.includes('|'));
+  assert.equal(d.results[2].status, 'bad'); assert.ok(d.quota.limit >= 3); });
+test('bulk: validation and size limit', async () => { assert.equal((await post('/api/bulk', {})).s, 400); assert.equal((await post('/api/bulk', { addresses: Array(501).fill('x') })).s, 413); });
+test('bulk: bad API key rejected', async () => { assert.equal((await post('/api/bulk', { addresses: ['x'] }, { 'x-api-key': 'a34_nope' })).s, 401); });
+test('bulk: API key flow', { skip: !process.env.ADMIN_PASSWORD }, async () => {
+  const r = await fetch(B + '/api/admin/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ password: process.env.ADMIN_PASSWORD }) }); const ck = r.headers.get('set-cookie').split(';')[0];
+  const k = await post('/api/admin/keys', { owner: 'test-co', daily_limit: 2 }, { cookie: ck }); assert.equal(k.s, 200); assert.match(k.d.key, /^a34_/);
+  const ok = await post('/api/bulk', { addresses: ['Phường Phúc Xá, Ba Đình, Hà Nội'] }, { 'x-api-key': k.d.key }); assert.equal(ok.s, 200); assert.equal(ok.d.quota.limit, 2);
+  const over = await post('/api/bulk', { addresses: ['a', 'b'] }, { 'x-api-key': k.d.key }); assert.equal(over.s, 429);
+  const L = await (await fetch(B + '/api/admin/keys', { headers: { cookie: ck } })).json(); const id = L.find(x => x.owner === 'test-co').id;
+  await fetch(B + `/api/admin/keys/${id}/revoke`, { method: 'POST', headers: { cookie: ck } });
+  assert.equal((await post('/api/bulk', { addresses: ['x'] }, { 'x-api-key': k.d.key })).s, 401); });
+test('ward page: canonical redirect, SEO, sitemap has 3321 wards', async () => {
+  const r = await fetch(B + '/xa/27022', { redirect: 'manual' }); assert.equal(r.status, 301); assert.match(r.headers.get('location'), /\/xa\/phuong-phu-tho-hoa-27022$/);
+  const p = await j('/xa/phuong-phu-tho-hoa-27022'); assert.equal(p.s, 200); assert.match(p.d, /<title>Phường Phú Thọ Ho/); assert.match(p.d, /Phường Tân Thành/);
+  assert.equal((await j('/xa/khong-co-99999')).s, 404);
+  const sm = (await j('/sitemap.xml')).d; assert.equal((sm.match(/\/xa\//g) || []).length, 3321); assert.match(sm, /hang-loat/); });
+test('bulk page renders', async () => { const p = await j('/hang-loat'); assert.match(p.d, /hàng loạt/i); });
