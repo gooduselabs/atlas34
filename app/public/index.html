@@ -3,7 +3,8 @@
 <!--META-->
 <meta name="theme-color" content="#EFE8DA" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#17160F" media="(prefers-color-scheme: dark)"><link rel="icon" href="/favicon.svg">
 <link rel="preload" href="/fonts/be-vietnam-pro-vietnamese-800-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/be-vietnam-pro-vietnamese-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/vendor/maplibre/maplibre-gl.css"><link rel="stylesheet" href="/style.css">
+<link rel="preload" href="/fonts/be-vietnam-pro-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/be-vietnam-pro-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/img/map-ph-light.webp" as="image" fetchpriority="high" media="(max-width:859px) and (not (prefers-color-scheme:dark))"><link rel="preload" href="/img/map-ph-dark.webp" as="image" fetchpriority="high" media="(max-width:859px) and (prefers-color-scheme:dark)"><link rel="preload" href="/data/provinces.json" as="fetch" crossorigin>
+<link rel="stylesheet" href="/style.css">
 <script>/*BOOT*/</script>
 <script>try{var t=localStorage.getItem("a34-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}</script>
 </head><body>
@@ -20,7 +21,7 @@
 </header>
 <main class="stage">
   <section class="map-wrap" aria-label="Bản đồ">
-    <div id="map"></div>
+    <div id="map"></div><div class="map-ph" aria-hidden="true"></div>
     <div class="map-legend"><span class="sw sw-m"></span>Tỉnh hợp nhất <span class="sw sw-k"></span>Giữ nguyên</div>
     <button class="map-back" hidden>← Toàn quốc</button>
     <div class="tip" hidden></div>
@@ -30,6 +31,5 @@
 </main>
 <noscript><style>.stage{display:none}</style></noscript>
 <div class="seo"><!--SEO--></div>
-<script src="/vendor/maplibre/maplibre-gl.js" defer></script><script src="/vendor/pmtiles/pmtiles.js" defer></script><script src="/basemap.js" defer></script>
 <script src="/app.js" defer></script>
 </body></html>

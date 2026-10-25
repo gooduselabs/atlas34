@@ -43,6 +43,7 @@ app.use('/tiles', (req, res, next) => { res.set({ 'Access-Control-Allow-Origin':
 app.use('/vendor/pmtiles', express.static('node_modules/pmtiles/dist', { maxAge: '30d' }));
 app.use('/vendor/maplibre', express.static('node_modules/maplibre-gl/dist', { maxAge: '30d', immutable: true }));
 app.use(['/geo', '/data'], (req, res, next) => { res.set('Cache-Control', 'public, max-age=86400'); next(); });
+for (const d of ['fonts', 'glyphs', 'img']) app.use('/' + d, express.static(path.join(PUB, d), { maxAge: '30d' }));
 app.use(express.static(PUB, { index: false, maxAge: '1h' }));
 
 // ---- API ----

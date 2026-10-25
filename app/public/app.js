@@ -47,6 +47,8 @@ function initMap(geo) {
   map.addControl(new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: false, showAccuracyCircle: true }), 'top-right');
   map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: (S.tiles ? atlasBasemapAttribution + ' · ' : '') + 'Ranh giới: sapnhap.bando.com.vn qua thanglequoc/vietnamese-provinces-database (MIT)' }));
   map.touchZoomRotate.disableRotation();
+  const attrOk = () => { const a = document.querySelector('.maplibregl-ctrl-attrib.maplibregl-compact-show'); if (a) { a.classList.remove('maplibregl-compact-show'); a.removeAttribute('open'); } $('.map-wrap').classList.add('attr-ok'); };
+  map.once('load', () => requestAnimationFrame(attrOk)); map.once('idle', () => $('.map-wrap').classList.add('live')); setTimeout(attrOk, 4000);
   map.on('load', () => {
     geo.features.forEach(f => { f.id = +f.properties.code; const p = S.byCode[f.properties.code]; f.properties.merged = p?.merged ? 1 : 0; f.properties.olds = p?.oldProvinces.length || 1; });
     map.addSource('prov', { type: 'geojson', data: geo, promoteId: undefined });
@@ -96,7 +98,7 @@ function overlayPaints() { const c = T(); const dim = (a, b) => ['case', ['boole
 function applyMapTheme() { const P = overlayPaints(); for (const [id, paint] of Object.entries(P)) if (map.getLayer(id)) for (const [k, v] of Object.entries(paint)) map.setPaintProperty(id, k, v);
   if (S.tiles) for (const t of S.tiles.sources) for (const l of atlasBasemap(t.id, t.minzoom, t.maxzoom >= 14 ? 24 : t.maxzoom + 1)) if (l.paint && map.getLayer(l.id)) for (const [k, v] of Object.entries(l.paint)) if (/color/.test(k)) map.setPaintProperty(l.id, k, v); }
 function setHover(src, id) { if (hov[src] != null) map.setFeatureState({ source: src, id: hov[src] }, { hover: false }); hov[src] = id; if (id != null) map.setFeatureState({ source: src, id }, { hover: true }); }
-function mk(html, lnglat, cls, anchor = 'center') { const el = document.createElement('div'); el.className = cls; el.innerHTML = html; return new maplibregl.Marker({ element: el, anchor }).setLngLat(lnglat).addTo(map); }
+function mk(html, lnglat, cls, anchor = 'center') { const el = document.createElement('div'); el.className = cls; el.innerHTML = html; const m = new maplibregl.Marker({ element: el, anchor }).setLngLat(lnglat).addTo(map); el.removeAttribute('role'); el.removeAttribute('tabindex'); el.setAttribute('aria-label', el.textContent); return m; }
 function addFixedLabels() {
   // Sovereignty: archipelagos are always labelled as part of Viet Nam with their administering unit.
   mk('<b>Quần đảo Hoàng Sa</b>Đặc khu Hoàng Sa · TP Đà Nẵng · Việt Nam', [111.0, 17.25], 'lbl lbl-isl', 'bottom-left');
@@ -163,7 +165,7 @@ function foot() { const s = S.stats; return `<div class="foot">Nguồn: <a href=
 function showHome() {
   setTab('map'); setTitle('Bản đồ hành chính Việt Nam sau sắp xếp 2025'); const s = S.stats;
   const merged = S.provinces.filter(p => p.merged).length;
-  folio.innerHTML = `
+  const html = `
   <div class="sec"><div class="kicker"><span>Ấn bản 2025</span><span>NQ 202/2025/QH15</span></div>
     <h1 class="h-xl">Ba mươi tư.</h1>
     <p class="lede">Từ 1/7/2025, Việt Nam còn 34 tỉnh, thành phố. Cấp huyện không còn; ${fmt(s.wards)} xã, phường, đặc khu trực thuộc thẳng cấp tỉnh.</p></div>
@@ -178,6 +180,7 @@ function showHome() {
       <div class="row"><button class="btn" id="qa-go">Đổi sang địa chỉ mới</button><button class="btn ghost" id="qa-gps">Dùng vị trí của tôi</button></div>
       <div class="hint">Vị trí GPS chỉ dùng một lần để tra ranh giới, không được lưu lại.</div><div id="qa-res"></div></div>${recentHTML()}</div>
   <div class="sec"><div class="h-s">Tìm nhanh tỉnh, thành</div><div class="search"><input id="qp" placeholder="Gõ tên tỉnh mới hoặc cũ, ví dụ: Quảng Nam" autocomplete="off"><span class="n" id="qpn"></span></div><ul class="idx" id="qpl"></ul></div>${foot()}`;
+  if (!(S.homeNode?.isConnected && S.lastHome === html)) { folio.innerHTML = html; S.lastHome = html; S.homeNode = folio.firstElementChild; }
   const inp = $('#qp'), ul = $('#qpl');
   inp.oninput = () => { const q = fold(inp.value); if (!q) { ul.innerHTML = ''; return; }
     const r = S.provinces.filter(p => fold(p.full + ' ' + p.oldProvinces.join(' ')).includes(q)).slice(0, 6);
@@ -499,13 +502,21 @@ X-Api-Key: &lt;khoá, tuỳ chọn&gt;
 // tiles manifest is only trusted if the first archive is actually reachable (Range request); otherwise fall back to the plain atlas style
 const tilesOk = async t => { if (!t?.sources?.length) return null; try { const r = await fetch(absUrl(t.sources[0].url), { headers: { Range: 'bytes=0-15' } }); return r.ok ? t : null; } catch { return null; } };
 folio.innerHTML = skeleton('<div class="skel l" style="width:40%"></div>');
-Promise.all([j('/data/provinces.json'), j('/geo/provinces.json'), j('/tiles/tiles.json').then(tilesOk).catch(() => null), j('/data/mapping.json').catch(() => null)]).then(([d, geo, tiles, m]) => { S.tiles = tiles && window.atlasBasemap ? tiles : null;
-  S.provinces = d.provinces; S.stats = d.stats; if (m) { S.wardName = {}; S.wardProv = {}; for (const [c, v] of Object.entries(m.wards)) { S.wardName[c] = v.name; S.wardProv[c] = v.p; } } d.provinces.forEach(p => S.byCode[p.code] = p);
+// perf: paint the folio (hero/stats) from the 13 KB provinces.json first; map engine + big JSON load afterwards
+const P0 = location.pathname.slice(B.length) || '/'; const needMap = /^\/xa\//.test(P0);
+const loadMapping = () => j('/data/mapping.json').then(m => { S.wardName = {}; S.wardProv = {}; for (const [c, v] of Object.entries(m.wards)) { S.wardName[c] = v.name; S.wardProv[c] = v.p; } }).catch(() => null);
+const pProv = j('/data/provinces.json').then(d => { S.provinces = d.provinces; S.stats = d.stats; d.provinces.forEach(p => S.byCode[p.code] = p); if (P0 === '/') { try { sheet('half'); showHome(); S.pre = true; } catch (e) {} } return d; });
+// start the heavy map engine only after the first content has painted (2 frames + a short pause, then idle)
+const idle = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => (window.requestIdleCallback || setTimeout)(() => r(), { timeout: 800 }), 250))));
+const loadScript = src => new Promise((r, x) => { const e = document.createElement('script'); e.src = B + src; e.onload = r; e.onerror = x; document.head.appendChild(e); });
+// mobile home: a static preview image (same view, sovereignty labels baked in) stands in for the map until the first
+// interaction or a few idle seconds, so the ~1 s of MapLibre start-up work never competes with first paint
+const facade = !needMap && P0 === '/' && innerWidth < 860;
+const wake = () => new Promise(r => { if (!facade) return r(); const ev = ['pointerdown', 'touchstart', 'wheel', 'keydown', 'scroll']; let done = false; const go = () => { if (done) return; done = true; ev.forEach(e => removeEventListener(e, go, true)); clearTimeout(t); r(); }; ev.forEach(e => addEventListener(e, go, { capture: true, passive: true })); const t = setTimeout(go, 6000); });
+const pEngine = pProv.then(() => needMap ? 0 : idle()).then(wake).then(() => { if (!document.querySelector('link[href$="maplibre-gl.css"]')) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = B + '/vendor/maplibre/maplibre-gl.css'; document.head.appendChild(l); } return Promise.all([loadScript('/vendor/maplibre/maplibre-gl.js'), loadScript('/vendor/pmtiles/pmtiles.js'), loadScript('/basemap.js')]); });
+Promise.all([pProv, j('/geo/provinces.json'), j('/tiles/tiles.json').then(tilesOk).catch(() => null), needMap ? loadMapping() : null, pEngine]).then(([d, geo, tiles]) => { S.tiles = tiles && window.atlasBasemap ? tiles : null; if (!needMap) loadMapping();
   const start = () => window.maplibregl ? initMap(geo) : setTimeout(start, 30); start();
   // if the style never finishes loading (broken tiles), retry once without the basemap so the site stays usable
   S.loadTm = setTimeout(() => { if (map && !map.getLayer('prov-fill')) { console.warn('basemap timeout, retrying without tiles'); map.remove(); S.tiles = null; initMap(geo); toast('Không tải được nền đường phố; hiển thị bản đồ hành chính.', true); } }, 12000);
 }).catch(e => { folio.innerHTML = errbox(e.message); });
 })();
-
-// collapse compact attribution on load (mobile)
-setTimeout(() => document.querySelector('.maplibregl-ctrl-attrib.maplibregl-compact-show')?.classList.remove('maplibregl-compact-show'), 2500);
