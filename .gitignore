@@ -11,3 +11,4 @@ test/node_modules/
 *.db-*
 export.json
 *.tgz
+app/tiles/*.pmtiles

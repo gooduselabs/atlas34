@@ -17,3 +17,11 @@
 - Lãnh đạo và thông tin tỉnh nằm trong `app/content/leaders.json` và `app/content/facts.json` (sửa trực tiếp / edit directly). Muốn duyệt một mục thì đặt `"status": "approved"`.
 - Mỗi thứ Hai, `leaders.yml` chạy lại pipeline lãnh đạo (Wikipedia → Wikidata → cổng TTĐT) và mở Pull Request để bạn duyệt (weekly PR for review).
 - Nguồn và giấy phép / Sources & licenses: [ATTRIBUTION.md](ATTRIBUTION.md).
+
+## Bản đồ nền đường phố (OSM vector) / Street basemap
+- Planetiler (OpenMapTiles schema) từ Geofabrik Vietnam → `vietnam.pmtiles` (z0–14, ~304 MiB), tách bằng `pmtiles extract` thành 6 file < 100 MB: `vn-lo` (z0–11) + `vn-nw/ne/nc/sc/s` (z12–14, ranh theo lưới tile z12 nên không chồng lấn). Manifest: `app/tiles/tiles.json`.
+- Hosting: file `.pmtiles` là asset của GitHub Release `basemap-tiles` (không commit vào git). `pages.yml` tải về `app/tiles/` lúc build → Pages phục vụ cùng site (Range OK). Bản Mac Docker mount `./app/tiles:/app/tiles:ro`, Express phục vụ `/tiles` có Range + CORS.
+- Tái tạo: `docker run -v $PWD:/data ghcr.io/onthegomap/planetiler --download --area=vietnam --output=/data/vietnam.pmtiles --maxzoom=14`, rồi tách như trên.
+- Chủ quyền: ẩn ranh giới biển/tranh chấp, ẩn tên biển/đảo nước ngoài; mặt nạ biển phía đông; Hoàng Sa (Đà Nẵng), Trường Sa (Khánh Hòa) luôn hiển thị từ lớp hành chính. Nhãn "Biển Đông".
+- Ảnh vệ tinh tùy chọn: EOX Sentinel-2 cloudless 2016 (CC BY 4.0), tối đa z13.
+- © OpenStreetMap contributors (ODbL) · © OpenMapTiles.

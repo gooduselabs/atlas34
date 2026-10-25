@@ -18,11 +18,13 @@ const api = u => window.__api ? window.__api(u) : j(u);
 // ---------- MAP ----------
 let map, hoverId = null, selId = null, wardHover = null, labels = [], fallbackLabels = [];
 function initMap(geo) {
-  map = new maplibregl.Map({ container: 'map', attributionControl: false, dragRotate: false, pitchWithRotate: false, maxBounds: [[95, 2], [125, 28]],
-    style: { version: 8, sources: {}, layers: [{ id: 'bg', type: 'background', paint: { 'background-color': '#DCE3DE' } }] },
-    bounds: VN_BOUNDS, fitBoundsOptions: { padding: 24 } });
+  window.__map = map = new maplibregl.Map({ container: 'map', attributionControl: false, dragRotate: false, pitchWithRotate: false, maxBounds: [[95, 2], [125, 28]],
+    style: baseStyle(), maxZoom: 19, bounds: VN_BOUNDS, fitBoundsOptions: { padding: 24 } });
+  window.__map = map;
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
-  map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: 'Ranh giới: sapnhap.bando.com.vn qua thanglequoc/vietnamese-provinces-database (MIT) · Không dùng nền bản đồ nước ngoài' }));
+  map.addControl(new maplibregl.FullscreenControl({ container: document.querySelector('.map-wrap') }), 'top-right');
+  map.addControl(new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: false, showAccuracyCircle: true }), 'top-right');
+  map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: (S.tiles ? atlasBasemapAttribution + ' · ' : '') + 'Ranh giới: sapnhap.bando.com.vn qua thanglequoc/vietnamese-provinces-database (MIT)' }));
   map.touchZoomRotate.disableRotation();
   map.on('load', () => {
     geo.features.forEach(f => { f.id = +f.properties.code; const p = S.byCode[f.properties.code]; f.properties.merged = p?.merged ? 1 : 0; f.properties.olds = p?.oldProvinces.length || 1; });
@@ -32,24 +34,24 @@ function initMap(geo) {
     map.addLayer({ id: 'prov-fill', type: 'fill', source: 'prov', paint: {
       'fill-color': ['case', ['boolean', ['feature-state', 'sel'], false], '#C8341E',
         ['boolean', ['feature-state', 'hover'], false], '#E9C46A', ['==', ['get', 'merged'], 1], ['interpolate', ['linear'], ['get', 'olds'], 2, '#E2BE7A', 3, '#D9A441'], '#F7F2E7'],
-      'fill-opacity': ['case', ['boolean', ['feature-state', 'dim'], false], .35, 1] } });
+      'fill-opacity': S.tiles ? ['interpolate', ['linear'], ['zoom'], 5, ['case', ['boolean', ['feature-state', 'dim'], false], .3, .92], 8, ['case', ['boolean', ['feature-state', 'dim'], false], .18, .5], 10, ['case', ['boolean', ['feature-state', 'dim'], false], .08, .14], 13, ['case', ['boolean', ['feature-state', 'dim'], false], 0, .04]] : ['case', ['boolean', ['feature-state', 'dim'], false], .35, 1] } });
     map.addLayer({ id: 'prov-line', type: 'line', source: 'borders', paint: { 'line-color': '#1B1A17', 'line-width': ['interpolate', ['linear'], ['zoom'], 4, .5, 9, 1.4] } });
     map.addLayer({ id: 'prov-outline', type: 'line', source: 'prov', paint: { 'line-color': '#1B1A17', 'line-width': ['interpolate', ['linear'], ['zoom'], 4, 1, 9, 2] } });
     map.addSource('wards', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
-    map.addLayer({ id: 'ward-fill', type: 'fill', source: 'wards', paint: { 'fill-color': ['case', ['boolean', ['feature-state', 'sel'], false], '#C8341E', ['boolean', ['feature-state', 'hover'], false], '#E9C46A', ['==', ['get', 't'], 'p'], '#F3E3C0', '#F7F2E7'], 'fill-opacity': .95 } });
+    map.addLayer({ id: 'ward-fill', type: 'fill', source: 'wards', paint: { 'fill-color': ['case', ['boolean', ['feature-state', 'sel'], false], '#C8341E', ['boolean', ['feature-state', 'hover'], false], '#E9C46A', ['==', ['get', 't'], 'p'], '#F3E3C0', '#F7F2E7'], 'fill-opacity': S.tiles ? ['interpolate', ['linear'], ['zoom'], 7, .7, 11, .12, 14, .02] : .95 } });
     map.addLayer({ id: 'ward-line', type: 'line', source: 'wards', paint: { 'line-color': '#1B1A17', 'line-width': ['interpolate', ['linear'], ['zoom'], 7, .25, 12, 1], 'line-opacity': .7 } });
     map.addLayer({ id: 'ward-sel', type: 'line', source: 'wards', filter: ['==', ['id'], -1], paint: { 'line-color': '#1B1A17', 'line-width': 2.5 } });
-    addFixedLabels(); addProvLabels(geo);
+    addFixedLabels(); addProvLabels(geo); setupBasemap();
     const tip = $('.tip');
     map.on('mousemove', 'prov-fill', e => { if (S.cur) return; const f = e.features[0]; setHover('prov', f.id);
       const p = S.byCode[f.properties.code]; tip.hidden = false; tip.style.left = e.point.x + 'px'; tip.style.top = e.point.y + 'px';
       tip.innerHTML = `${esc(p.full)}<small>${p.merged ? 'Hợp nhất ' + p.oldProvinces.map(short).join(' + ') : 'Giữ nguyên'} · ${p.wardCount} xã/phường</small>`; map.getCanvas().style.cursor = 'pointer'; });
     map.on('mouseleave', 'prov-fill', () => { setHover('prov', null); tip.hidden = true; map.getCanvas().style.cursor = ''; });
-    map.on('click', 'prov-fill', e => { if (S.picking) return; const c = e.features[0].properties.code; if (S.cur !== c) go(B + `/tinh/${S.byCode[c].slug}`); });
+    map.on('click', 'prov-fill', e => { if (S.picking) return; if (map.getZoom() >= 9 && !map.queryRenderedFeatures(e.point, { layers: ['ward-fill'] }).length) return pointInfo(e.lngLat); const c = e.features[0].properties.code; if (S.cur !== c) go(B + `/tinh/${S.byCode[c].slug}`); });
     map.on('mousemove', 'ward-fill', e => { const f = e.features[0]; setHover('wards', f.id); tip.hidden = false; tip.style.left = e.point.x + 'px'; tip.style.top = e.point.y + 'px';
       tip.innerHTML = `${esc(f.properties.fullName)}<small>${f.properties.areaKm2 ? fmt(f.properties.areaKm2) + ' km² · ' : ''}bấm để xem các đơn vị cũ</small>`; map.getCanvas().style.cursor = 'pointer'; });
     map.on('mouseleave', 'ward-fill', () => { setHover('wards', null); tip.hidden = true; });
-    map.on('click', 'ward-fill', e => { if (S.picking) return; e.preventDefault(); showWard(e.features[0].properties.code); });
+    map.on('click', 'ward-fill', e => { if (S.picking) return; e.preventDefault(); showWard(e.features[0].properties.code); pointInfo(e.lngLat); });
     map.on('zoom', () => { const z = map.getZoom(); labels.forEach(l => l.getElement().style.opacity = S.cur ? 0 : (z < 4.6 && l._small ? 0 : 1)); });
     route();
   });
@@ -285,9 +287,92 @@ function geoLoc(r) {
   if (!navigator.geolocation) return alert('Trình duyệt không hỗ trợ định vị');
   navigator.geolocation.getCurrentPosition(p => resolvePoint(r, p.coords.longitude, p.coords.latitude, `Xác định theo vị trí GPS (±${Math.round(p.coords.accuracy)} m)`), e => alert('Không lấy được vị trí: ' + e.message), { enableHighAccuracy: true, timeout: 15000 });
 }
+// ---------- BASE MAP ----------
+function absUrl(u) { return /^https?:/.test(u) ? u : location.origin + B + '/tiles/' + u; }
+function baseStyle() {
+  const st = { version: 8, glyphs: location.origin + B + '/glyphs/{fontstack}/{range}.pbf', sources: {}, layers: [{ id: 'bg', type: 'background', paint: { 'background-color': S.tiles ? '#E2DED6' : '#DCE3DE' } }] };
+  if (!S.tiles) return st;
+  if (!S.pm) { S.pm = new pmtiles.Protocol(); maplibregl.addProtocol('pmtiles', S.pm.tile); }
+  st.sources.sat = window.atlasSatellite;
+  st.layers.push({ id: 'sat', type: 'raster', source: 'sat', layout: { visibility: 'none' } });
+  for (const t of S.tiles.sources) { st.sources[t.id] = { type: 'vector', url: 'pmtiles://' + absUrl(t.url) }; st.layers.push(...atlasBasemap(t.id, t.minzoom, t.maxzoom >= 14 ? 24 : t.maxzoom + 1)); }
+  // sovereignty: open-sea mask east of the OSM extract (Biển Đông always rendered as water, no foreign land/labels)
+  st.sources.seamask = { type: 'geojson', data: { type: 'Feature', geometry: { type: 'MultiPolygon', coordinates: [[[[114.4, 4.5], [117.8, 4.5], [117.8, 12.6], [114.4, 12.6], [114.4, 4.5]]], [[[114.4, 12.6], [119.6, 12.6], [119.6, 21.2], [114.4, 21.2], [114.4, 12.6]]]] } } };
+  st.layers.splice(1, 0, { id: 'seamask', type: 'fill', source: 'seamask', paint: { 'fill-color': '#BFD3D0', 'fill-antialias': false } });
+  return st;
+}
+const LAYERS = { base: 'Nền bản đồ (OSM)', sat: 'Ảnh vệ tinh (2016)', prov: 'Ranh giới tỉnh', ward: 'Ranh giới xã', hq: 'Trụ sở UBND xã' };
+const lstate = { base: true, sat: false, prov: true, ward: true, hq: false };
+function setupBasemap() {
+  const firstRoad = map.getStyle().layers.find(l => /-(building|road-|path)/.test(l.id));
+  if (firstRoad) { map.moveLayer('prov-shadow', firstRoad.id); map.moveLayer('prov-fill', firstRoad.id); map.moveLayer('ward-fill', firstRoad.id); }
+  map.addSource('wards-all', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+  map.addLayer({ id: 'wall-line', type: 'line', source: 'wards-all', minzoom: 9, paint: { 'line-color': '#7A3B2E', 'line-width': ['interpolate', ['linear'], ['zoom'], 9, .4, 14, 1.6], 'line-dasharray': [3, 2], 'line-opacity': .75 } }, 'prov-line');
+  map.addLayer({ id: 'wall-label', type: 'symbol', source: 'wards-all', minzoom: 11, layout: { 'text-field': ['get', 'fullName'], 'text-font': ['Be Vietnam Pro Bold'], 'text-size': ['interpolate', ['linear'], ['zoom'], 11, 10, 15, 14], 'text-transform': 'uppercase', 'text-letter-spacing': .1, 'text-max-width': 9, 'text-padding': 20 },
+    paint: { 'text-color': '#7A3B2E', 'text-halo-color': 'rgba(247,242,231,.9)', 'text-halo-width': 1.8 } });
+  map.addSource('hq', { type: 'geojson', data: B + '/data/hq.geojson' });
+  map.addLayer({ id: 'hq-pt', type: 'circle', source: 'hq', minzoom: 8, layout: { visibility: 'none' }, paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 2.5, 14, 6], 'circle-color': '#C8341E', 'circle-stroke-color': '#fff', 'circle-stroke-width': 1.5 } });
+  map.addLayer({ id: 'hq-label', type: 'symbol', source: 'hq', minzoom: 12, layout: { visibility: 'none', 'text-field': ['concat', 'UBND ', ['get', 'name']], 'text-font': ['Be Vietnam Pro Bold'], 'text-size': 11, 'text-offset': [0, 1], 'text-anchor': 'top' }, paint: { 'text-color': '#C8341E', 'text-halo-color': '#fff', 'text-halo-width': 1.5 } });
+  // layer panel
+  const pan = document.createElement('div'); pan.className = 'lyr';
+  pan.innerHTML = `<button class="lyr-b" aria-expanded="false" title="Lớp bản đồ">Lớp</button><div class="lyr-p" hidden>${Object.entries(LAYERS).filter(([k]) => S.tiles || !['base', 'sat'].includes(k)).map(([k, t]) => `<label><input type="checkbox" data-k="${k}" ${lstate[k] ? 'checked' : ''}> ${t}</label>`).join('')}</div>`;
+  $('.map-wrap').appendChild(pan);
+  pan.querySelector('.lyr-b').onclick = () => { const p = pan.querySelector('.lyr-p'); p.hidden = !p.hidden; pan.querySelector('.lyr-b').setAttribute('aria-expanded', !p.hidden); };
+  pan.onchange = e => { const k = e.target.dataset.k; lstate[k] = e.target.checked; applyLayers(); };
+  // place search
+  const sb = document.createElement('div'); sb.className = 'msearch'; sb.innerHTML = '<input placeholder="Tìm đường, địa điểm, xã…" aria-label="Tìm trên bản đồ" autocomplete="off"><ul hidden></ul>';
+  $('.map-wrap').appendChild(sb); placeSearch(sb);
+  map.on('moveend', loadWardsAll); applyLayers();
+}
+function vis(ids, on) { ids.forEach(id => map.getLayer(id) && map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none')); }
+function applyLayers() {
+  const all = map.getStyle().layers.map(l => l.id); const baseIds = S.tiles ? all.filter(id => S.tiles.sources.some(t => id.startsWith(t.id + '-'))) : [];
+  vis(baseIds, lstate.base); vis(['sat'], lstate.sat); vis(['prov-line', 'prov-outline', 'prov-shadow'], lstate.prov); vis(['wall-line', 'wall-label'], lstate.ward); vis(['hq-pt', 'hq-label'], lstate.hq);
+  map.setPaintProperty('bg', 'background-color', lstate.base || lstate.sat ? '#E2DED6' : '#DCE3DE'); loadWardsAll();
+}
+const pbbox = {};
+async function loadWardsAll() {
+  if (!lstate.ward || map.getZoom() < 9) return; const b = map.getBounds();
+  if (!Object.keys(pbbox).length) map.querySourceFeatures('prov').forEach(f => { const c = f.properties.code; const bb = bboxOf({ features: [f] }); const o = pbbox[c]; pbbox[c] = o ? [[Math.min(o[0][0], bb[0][0]), Math.min(o[0][1], bb[0][1])], [Math.max(o[1][0], bb[1][0]), Math.max(o[1][1], bb[1][1])]] : bb; });
+  const need = Object.entries(pbbox).filter(([, bb]) => !(bb[1][0] < b.getWest() || bb[0][0] > b.getEast() || bb[1][1] < b.getSouth() || bb[0][1] > b.getNorth())).map(([c]) => c).slice(0, 4);
+  const key = need.sort().join(','); if (key === S.wallKey) return; S.wallKey = key;
+  const gs = await Promise.all(need.map(c => S.wardsGeo[c] ? S.wardsGeo[c] : j(`/geo/wards/${c}.json`).then(g => { g.features.forEach(f => { f.id = +f.properties.code; f.properties.t = /^Phường/.test(f.properties.fullName) ? 'p' : 'x'; }); return S.wardsGeo[c] = g; })));
+  if (S.wallKey === key) map.getSource('wards-all').setData({ type: 'FeatureCollection', features: gs.flatMap(g => g.features) });
+}
+let popup;
+async function pointInfo(ll) {
+  popup?.remove(); popup = new maplibregl.Popup({ maxWidth: '300px', className: 'pinfo' }).setLngLat(ll).setHTML('<div class="meta">Đang xác định…</div>').addTo(map);
+  try { const r = await api(`/api/locate?lat=${ll.lat}&lon=${ll.lng}`);
+    if (!r.code) return popup.setHTML('<div class="meta">Ngoài ranh giới các xã của Việt Nam trong dữ liệu.</div>');
+    const o = await api('/api/convert?new=' + r.code);
+    popup.setHTML(`<div class="kick">Đơn vị mới · mã ${r.code}</div><div class="pn">${esc(r.name)}</div><div class="pp"><a href="${B}/tinh/${r.slug}?xa=${r.code}">${esc(r.province)}</a></div>
+      <div class="meta">Hình thành từ ${o.from.length} đơn vị cũ:</div><ul>${o.from.slice(0, 6).map(f => `<li>${esc(f.w)}, ${esc(f.d)}${f.split ? ' <i>(một phần)</i>' : ''}</li>`).join('')}${o.from.length > 6 ? `<li>…</li>` : ''}</ul>
+      <div class="meta">${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)} · <a href="${B}/doi-dia-chi?moi=${r.code}">Chi tiết</a></div>`);
+  } catch { popup.setHTML('<div class="meta">Không xác định được.</div>'); }
+}
+function placeSearch(sb) {
+  const inp = sb.querySelector('input'), ul = sb.querySelector('ul'); const shards = {}; let tm, res = [];
+  const provOf = q => S.provinces.find(p => q.includes(fold(short(p.full)))) ;
+  inp.oninput = () => { clearTimeout(tm); tm = setTimeout(async () => {
+    const q = fold(inp.value); if (q.length < 2) { ul.hidden = true; return; }
+    let p = provOf(q); if (!p) { const c = map.getCenter(); const r = await api(`/api/locate?lat=${c.lat}&lon=${c.lng}`).catch(() => ({})); p = S.byCode[r.provinceCode] || S.byCode['01']; }
+    const qq = q.replace(fold(short(p.full)), '').trim() || q; const toks = qq.split(' ');
+    const data = shards[p.code] ||= await j(`/search/${p.code}.json`).then(rows => rows.map(r => [...r, fold(r[0])]));
+    const KO = { s: 0, p: 1, a: 2, t: 2, o: 2, h: 3, l: 3, b: 4, r: 2 };
+    res = data.filter(r => toks.every(t => r[5].includes(t))).sort((a, b) => (a[5].startsWith(qq) ? 0 : 1) - (b[5].startsWith(qq) ? 0 : 1) || KO[a[3]] - KO[b[3]] || a[0].length - b[0].length).slice(0, 8);
+    const KN = { s: 'Đường', p: 'Địa danh', a: 'Tiện ích', h: 'Cửa hàng', t: 'Du lịch', l: 'Giải trí', o: 'Cơ quan', b: 'Toà nhà', r: 'Giao thông' };
+    ul.innerHTML = res.length ? res.map((r, i) => `<li data-i="${i}">${esc(r[0])}<small>${KN[r[3]] || ''} · ${esc(S.wardName?.[r[4]] || '')} ${esc(short(p.full))}</small></li>`).join('') : `<li>Không thấy trong ${esc(short(p.full))}. Thử thêm tên tỉnh.</li>`; ul.hidden = false;
+  }, 200); };
+  ul.onmousedown = e => { const li = e.target.closest('li[data-i]'); if (!li) return; e.preventDefault(); const r = res[+li.dataset.i]; ul.hidden = true; inp.value = r[0]; inp.blur();
+    map.flyTo({ center: [r[1], r[2]], zoom: r[3] === 's' ? 16 : 17, duration: 1200 }); map.once('moveend', () => pointInfo({ lng: r[1], lat: r[2] })); };
+  inp.onblur = () => setTimeout(() => ul.hidden = true, 150);
+}
 // ---------- BOOT ----------
-Promise.all([j('/data/provinces.json'), j('/geo/provinces.json')]).then(([d, geo]) => {
-  S.provinces = d.provinces; S.stats = d.stats; d.provinces.forEach(p => S.byCode[p.code] = p);
+Promise.all([j('/data/provinces.json'), j('/geo/provinces.json'), j('/tiles/tiles.json').catch(() => null)]).then(([d, geo, tiles]) => { S.tiles = tiles && window.atlasBasemap ? tiles : null;
+  S.provinces = d.provinces; S.stats = d.stats; j('/data/mapping.json').then(m => { S.wardName = Object.fromEntries(Object.entries(m.wards).map(([c, v]) => [c, v.name])); }).catch(() => {}); d.provinces.forEach(p => S.byCode[p.code] = p);
   const start = () => window.maplibregl ? initMap(geo) : setTimeout(start, 30); start();
 });
 })();
+
+// collapse compact attribution on load (mobile)
+setTimeout(() => document.querySelector('.maplibregl-ctrl-attrib.maplibregl-compact-show')?.classList.remove('maplibregl-compact-show'), 2500);

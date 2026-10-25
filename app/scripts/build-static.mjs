@@ -11,6 +11,9 @@ try {
   // 1. static assets
   fs.cpSync('public', OUT, { recursive: true, filter: s => !/admin\.html$|index\.html$/.test(s) });
   for (const f of ['maplibre-gl.js', 'maplibre-gl.css']) w('vendor/maplibre/' + f, fs.readFileSync('node_modules/maplibre-gl/dist/' + f));
+  w('vendor/pmtiles/pmtiles.js', fs.readFileSync('node_modules/pmtiles/dist/pmtiles.js'));
+  // tiles: TILES_SRC dir with *.pmtiles + tiles.json (downloaded from the GitHub release in CI)
+  const TS = process.env.TILES_SRC || 'tiles'; if (fs.existsSync(path.join(TS, 'tiles.json'))) fs.cpSync(TS, path.join(OUT, 'tiles'), { recursive: true });
   // 2. data: leaders/facts as served by the API, legal, OSM shards, PIP
   const { provinces } = JSON.parse(fs.readFileSync('public/data/provinces.json'));
   const leaders = {}, facts = {};

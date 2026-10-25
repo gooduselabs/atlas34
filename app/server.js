@@ -37,6 +37,9 @@ const detail = p => ({ ...p, leaders: leadersOf(p.code), facts: factsOf(p.code) 
 
 const app = express(); app.disable('x-powered-by'); app.use(compression()); app.use(express.json()); app.use(cookieParser());
 app.use((req, res, next) => { res.set({ 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'strict-origin-when-cross-origin', 'X-Frame-Options': 'SAMEORIGIN' }); next(); });
+const TILES = process.env.TILES_DIR || path.resolve('tiles');
+app.use('/tiles', (req, res, next) => { res.set({ 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Range', 'Access-Control-Expose-Headers': 'Content-Length, Content-Range, ETag', 'Cache-Control': 'public, max-age=604800' }); if (req.method === 'OPTIONS') return res.sendStatus(204); next(); }, express.static(TILES, { acceptRanges: true, maxAge: '7d' }));
+app.use('/vendor/pmtiles', express.static('node_modules/pmtiles/dist', { maxAge: '30d' }));
 app.use('/vendor/maplibre', express.static('node_modules/maplibre-gl/dist', { maxAge: '30d', immutable: true }));
 app.use(['/geo', '/data'], (req, res, next) => { res.set('Cache-Control', 'public, max-age=86400'); next(); });
 app.use(express.static(PUB, { index: false, maxAge: '1h' }));

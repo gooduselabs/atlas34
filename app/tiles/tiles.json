@@ -1,0 +1,7 @@
+{"attribution":"© OpenStreetMap contributors · © OpenMapTiles","sources":[
+{"id":"lo","url":"vn-lo.pmtiles","minzoom":0,"maxzoom":11},
+{"id":"nw","url":"vn-nw.pmtiles","minzoom":12,"maxzoom":14},
+{"id":"ne","url":"vn-ne.pmtiles","minzoom":12,"maxzoom":14},
+{"id":"nc","url":"vn-nc.pmtiles","minzoom":12,"maxzoom":14},
+{"id":"sc","url":"vn-sc.pmtiles","minzoom":12,"maxzoom":14},
+{"id":"s","url":"vn-s.pmtiles","minzoom":12,"maxzoom":14}]}

@@ -7,5 +7,5 @@ services:
     env_file: .env            # ADMIN_PASSWORD, SESSION_SECRET, PORT, PUBLIC_URL
     ports: ["${HOST_PORT:-3300}:3300"]
     environment: { PORT: "3300", TZ: Asia/Ho_Chi_Minh }
-    volumes: [atlas-data:/data]   # SQLite: leaders, facts, refresh runs
+    volumes: [atlas-data:/data, ./app/tiles:/app/tiles:ro]   # SQLite + PMTiles basemap (range requests)
 volumes: { atlas-data: {} }
