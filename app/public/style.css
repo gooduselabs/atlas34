@@ -265,8 +265,11 @@ button{font-family:var(--sans)}
 }
 .map-wrap:not(.attr-ok) .maplibregl-ctrl-attrib-inner{visibility:hidden}
 @keyframes lblin{from{opacity:0}to{opacity:1}}.maplibregl-marker.lbl{animation:lblin .35s ease-out both}
-.map-ph{display:none}
 @media (max-width:859px){.map-ph{display:block;position:absolute;inset:0;z-index:1;pointer-events:none;background:var(--sea) var(--map-ph) center top/cover no-repeat;transition:opacity .25s}.map-wrap.live .map-ph{opacity:0;visibility:hidden}}
 :root{--map-ph:url(img/map-ph-light.webp)}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){--map-ph:url(img/map-ph-dark.webp)}}
 :root[data-theme=dark]{--map-ph:url(img/map-ph-dark.webp)}
+@media (min-width:860px){.map-ph{display:block;position:absolute;inset:0;z-index:1;pointer-events:none;background:var(--sea) var(--map-ph-d) center/cover no-repeat;transition:opacity .25s}.map-wrap.live .map-ph{opacity:0;visibility:hidden}}
+:root{--map-ph-d:url(img/map-ph-d-light.webp)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--map-ph-d:url(img/map-ph-d-dark.webp)}}
+:root[data-theme=dark]{--map-ph-d:url(img/map-ph-d-dark.webp)}
