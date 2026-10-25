@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!--META-->
+<meta name="theme-color" content="#EFE8DA"><link rel="icon" href="/favicon.svg">
+<link rel="preload" href="/fonts/be-vietnam-pro-vietnamese-800-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/be-vietnam-pro-vietnamese-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/vendor/maplibre/maplibre-gl.css"><link rel="stylesheet" href="/style.css">
+<script>/*BOOT*/</script>
+</head><body>
+<header class="mast">
+  <a class="brand" href="/"><span class="brand-n">34</span><span class="brand-t">Atlas<br>hành chính<br>Việt Nam</span></a>
+  <nav class="tabs" role="tablist">
+    <a href="/" data-view="map" role="tab">Bản đồ</a>
+    <a href="/doi-dia-chi" data-view="convert" role="tab">Đổi địa chỉ</a>
+    <a href="/chi-muc" data-view="index" role="tab">Chỉ mục</a>
+  </nav>
+  <div class="mast-meta"><span>Hiệu lực</span><b>01·07·2025</b></div>
+</header>
+<main class="stage">
+  <section class="map-wrap" aria-label="Bản đồ">
+    <div id="map"></div>
+    <div class="map-legend"><span class="sw sw-m"></span>Tỉnh hợp nhất <span class="sw sw-k"></span>Giữ nguyên</div>
+    <button class="map-back" hidden>← Toàn quốc</button>
+    <div class="tip" hidden></div>
+  </section>
+  <aside class="folio" id="folio" tabindex="-1"></aside>
+</main>
+<noscript><style>.stage{display:none}</style></noscript>
+<div class="seo"><!--SEO--></div>
+<script src="/vendor/maplibre/maplibre-gl.js" defer></script>
+<script src="/app.js" defer></script>
+</body></html>

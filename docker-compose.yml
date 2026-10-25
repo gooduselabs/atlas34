@@ -1,0 +1,11 @@
+services:
+  atlas:
+    build: ./app
+    image: vn-map-atlas:latest
+    container_name: vn-map-atlas
+    restart: unless-stopped
+    env_file: .env            # ADMIN_PASSWORD, SESSION_SECRET, PORT, PUBLIC_URL
+    ports: ["${HOST_PORT:-3300}:3300"]
+    environment: { PORT: "3300", TZ: Asia/Ho_Chi_Minh }
+    volumes: [atlas-data:/data]   # SQLite: leaders, facts, refresh runs
+volumes: { atlas-data: {} }

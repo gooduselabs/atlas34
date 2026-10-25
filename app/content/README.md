@@ -1,0 +1,1 @@
+Editable content. `leaders.json`: one row per (province, role). `cand_*` = latest automatic value from the pipeline; `name`/`source_url`/`verified_at` + `status: "approved"` = human-approved published value. `facts.json`: `kind` = summary | fact | specialty; `source_url` is required; `status` = auto | approved.

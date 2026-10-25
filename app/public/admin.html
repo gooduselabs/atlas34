@@ -1,0 +1,43 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Quản trị · Atlas 34</title><link rel="stylesheet" href="/style.css"><style>
+body{padding:0}.wrap{max-width:1100px;margin:0 auto;padding:24px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font:700 10px var(--sans);text-transform:uppercase;letter-spacing:.14em;color:var(--mute);border-bottom:1.5px solid var(--ink)}
+tr.flag td{background:#c8341e0d}input,select,textarea{font:inherit;border:1.5px solid var(--ink);background:var(--paper2);padding:6px 8px;width:100%}
+textarea{min-height:60px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.mini{font-size:11px;color:var(--mute)}
+.tabs2 button{font:700 11px var(--sans);text-transform:uppercase;letter-spacing:.12em;padding:10px 14px;border:1.5px solid var(--ink);background:none;cursor:pointer;margin-right:-1.5px}
+.tabs2 button[aria-pressed=true]{background:var(--ink);color:var(--paper)}</style></head><body>
+<header class="mast" style="grid-template-columns:auto 1fr"><a class="brand" href="/"><span class="brand-n">34</span><span class="brand-t">Atlas<br>Quản trị</span></a><div></div></header>
+<div class="wrap" id="app"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const api=(u,o={})=>fetch(u,{headers:{'Content-Type':'application/json'},...o,body:o.body&&JSON.stringify(o.body)}).then(async r=>{const d=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(d.error||r.status),{status:r.status});return d});
+const ROLE={chu_tich:'Chủ tịch UBND',bi_thu:'Bí thư'};let tab='leaders',P=[];
+async function boot(){try{P=await api('/api/provinces');await draw()}catch(e){if(e.status===401)login();else $('#app').textContent=e.message}}
+function login(){$('#app').innerHTML=`<div class="sec" style="max-width:420px;border:1.5px solid var(--ink);margin-top:40px;background:var(--paper)"><h1 class="h-l">Đăng nhập</h1><form id="f"><input type="password" id="pw" placeholder="Mật khẩu quản trị" autocomplete="current-password" autofocus><p class="mini" id="er" style="color:var(--red);margin:8px 0"></p><button class="btn">Vào</button></form></div>`;
+$('#f').onsubmit=async e=>{e.preventDefault();try{await api('/api/admin/login',{method:'POST',body:{password:$('#pw').value}});draw()}catch(x){$('#er').textContent=x.message}}}
+async function draw(){
+ const runs=await api('/api/admin/runs');const last=runs.runs[0];
+ $('#app').innerHTML=`<div class="row" style="justify-content:space-between;margin-bottom:16px"><div class="tabs2"><button data-t="leaders" aria-pressed="${tab==='leaders'}">Lãnh đạo</button><button data-t="facts" aria-pressed="${tab==='facts'}">Thông tin / đặc sản</button></div>
+ <div class="row"><span class="mini">${runs.running?'Đang làm mới…':last?`Lần làm mới gần nhất: ${new Date(last.started_at).toLocaleString('vi-VN')} · ${esc(last.summary||'đang chạy')}`:'Chưa chạy'} · lịch: thứ Hai 03:00</span><button class="btn" id="rf">Làm mới ngay</button><button class="btn" id="lo" style="background:var(--mute)">Thoát</button></div></div><div id="body"></div>`;
+ document.querySelectorAll('.tabs2 button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;draw()});
+ $('#rf').onclick=async()=>{await api('/api/admin/refresh',{method:'POST'});setTimeout(draw,800)};$('#lo').onclick=async()=>{await api('/api/admin/logout',{method:'POST'});login()};
+ tab==='leaders'?leaders():facts()}
+async function leaders(){const L=await api('/api/admin/leaders');
+ $('#body').innerHTML=`<p class="mini" style="margin-bottom:10px">${L.filter(l=>l.flag==='conflict'||l.flag==='changed').length} mục cần xem xét · ${L.filter(l=>l.status==='approved').length}/${L.length} đã duyệt. Chỉ duyệt khi đã đối chiếu với nguồn chính thức (cổng TTĐT tỉnh, chinhphu.vn). Có thể sửa tên/URL trước khi duyệt.</p>
+ <table><tr><th>Tỉnh</th><th>Chức danh</th><th>Ứng viên (tự động)</th><th>Bằng chứng</th><th>Đang công bố</th><th></th></tr>${L.map((l,i)=>`<tr class="${l.flag&&l.flag!=='wikidata_stale'?'flag':''}"><td>${esc(l.pname)}</td><td>${ROLE[l.role]}</td>
+ <td><input id="n${i}" value="${esc(l.cand_name)}"><input id="u${i}" value="${esc(l.cand_source_url)}" style="margin-top:4px;font-size:11px"><div class="mini">${esc(l.cand_status)}${l.flag?' · <b style="color:var(--red)">'+esc(l.flag)+'</b>':''}</div></td>
+ <td class="mini">${l.evidence?Object.entries(l.evidence).map(([k,v])=>`${k}: ${v.value?esc(v.value):v.found===true?'tên có trên trang':v.found===false?'không thấy tên':'không tải được'} <a href="${esc(v.url)}" target="_blank" rel="noopener">↗</a>`).join('<br>'):''}</td>
+ <td>${l.name?esc(l.name)+'<div class="mini">'+new Date(l.verified_at).toLocaleDateString('vi-VN')+'</div>':'<span class="mini">—</span>'}</td>
+ <td><button class="btn" data-a="${i}">Duyệt</button> <button class="btn" style="background:var(--mute);margin-top:4px" data-r="${i}">Loại</button></td></tr>`).join('')}</table>`;
+ $('#body').onclick=async e=>{const a=e.target.dataset.a,r=e.target.dataset.r;if(a!=null){const l=L[a];try{await api(`/api/admin/leaders/${l.province}/${l.role}/approve`,{method:'POST',body:{name:$('#n'+a).value,source_url:$('#u'+a).value}});leaders()}catch(x){alert(x.message)}}
+ if(r!=null){const l=L[r];await api(`/api/admin/leaders/${l.province}/${l.role}/reject`,{method:'POST'});leaders()}}}
+async function facts(){const F=await api('/api/admin/facts');const opt=P.map(p=>`<option value="${p.code}">${esc(p.full)}</option>`).join('');
+ $('#body').innerHTML=`<div class="sec" style="border:1.5px solid var(--ink);margin-bottom:16px"><div class="h-s">Thêm / sửa</div><form id="ff"><input type="hidden" id="fid"><div class="row"><select id="fp" style="width:auto">${opt}</select><select id="fk" style="width:auto"><option value="fact">Nổi tiếng</option><option value="specialty">Đặc sản</option><option value="summary">Tóm tắt</option></select></div>
+ <textarea id="ft" placeholder="Nội dung ngắn, có kiểm chứng" style="margin-top:8px"></textarea><input id="fu" placeholder="URL nguồn (bắt buộc)" style="margin-top:8px"><p class="mini" id="fe" style="color:var(--red)"></p><button class="btn">Lưu (duyệt)</button></form></div>
+ <table><tr><th>Tỉnh</th><th>Loại</th><th>Nội dung</th><th>Nguồn</th><th>TT</th><th></th></tr>${F.map(f=>`<tr><td>${esc(P.find(p=>p.code===f.province)?.name)}</td><td>${esc(f.kind)}</td><td>${esc(f.text.slice(0,180))}</td><td class="mini"><a href="${esc(f.source_url)}" target="_blank" rel="noopener">${esc(new URL(f.source_url).hostname)}</a><br>${new Date(f.verified_at).toLocaleDateString('vi-VN')}</td><td class="mini">${esc(f.status)}</td><td><button class="btn" data-e="${f.id}">Sửa</button> <button class="btn" style="background:var(--mute)" data-d="${f.id}">Xoá</button></td></tr>`).join('')}</table>`;
+ $('#ff').onsubmit=async e=>{e.preventDefault();try{await api('/api/admin/facts',{method:'POST',body:{id:$('#fid').value||undefined,province:$('#fp').value,kind:$('#fk').value,text:$('#ft').value,source_url:$('#fu').value}});facts()}catch(x){$('#fe').textContent=x.message}};
+ $('#body').querySelector('table').onclick=async e=>{const d=e.target.dataset;if(d.d&&confirm('Xoá mục này?')){await api('/api/admin/facts/'+d.d,{method:'DELETE'});facts()}
+ if(d.e){const f=F.find(x=>x.id==d.e);$('#fid').value=f.id;$('#fp').value=f.province;$('#fk').value=f.kind;$('#ft').value=f.text;$('#fu').value=f.source_url;scrollTo(0,0)}}}
+boot();
+</script></body></html>

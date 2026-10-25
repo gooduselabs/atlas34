@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+node_modules/
+raw/
+app/var/
+app/dist/
+screenshots/
+test/node_modules/
+*.db
+*.db-*
+export.json
+*.tgz

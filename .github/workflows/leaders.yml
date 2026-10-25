@@ -1,0 +1,25 @@
+name: Weekly leader refresh (opens PR)
+on:
+  schedule: [{ cron: "0 20 * * 0" }]   # Monday 03:00 Asia/Ho_Chi_Minh
+  workflow_dispatch:
+permissions: { contents: write, pull-requests: write }
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm, cache-dependency-path: app/package-lock.json }
+      - run: npm ci
+        working-directory: app
+      - run: node scripts/leaders-refresh.mjs
+        working-directory: app
+        env: { SUMMARY_FILE: /tmp/leaders-summary.md }
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: bot/leaders-refresh
+          commit-message: "data: weekly leader refresh"
+          title: "Lãnh đạo: làm mới hằng tuần (cần duyệt)"
+          body-path: /tmp/leaders-summary.md
+          add-paths: app/content/*.json
+          delete-branch: true
