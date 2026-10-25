@@ -1,0 +1,10 @@
+name: News source reachability (manual)
+on: { workflow_dispatch: {} }
+permissions: { contents: read }
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -s -o /dev/null -w "robots %{http_code} %{time_total}s\n" -A "Atlas34-news-verify/1.0" https://xaydungchinhsach.chinhphu.vn/robots.txt
+          curl -s --compressed -A "Atlas34-news-verify/1.0" "https://xaydungchinhsach.chinhphu.vn/tim-kiem.htm?keywords=H%E1%BB%93%20V%C4%83n%20Ni%C3%AAn" | grep -c box-category-item

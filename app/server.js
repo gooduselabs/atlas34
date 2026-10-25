@@ -1,7 +1,7 @@
 import express from 'express'; import compression from 'compression'; import cookieParser from 'cookie-parser';
 import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto'; import cron from 'node-cron';
-import { db } from './lib/db.js'; import { refreshAll } from './lib/leaders.js'; import { ogPng } from './lib/og.js'; import { resolveStreet, locate, legalFor } from './lib/resolve.js'; import { seedFromContent } from './lib/content.js';
-if (seedFromContent()) console.log('seeded leaders/facts from content/');
+import { db } from './lib/db.js'; import { refreshAll } from './lib/leaders.js'; import { ogPng } from './lib/og.js'; import { resolveStreet, locate, legalFor } from './lib/resolve.js'; import { seedFromContent, syncNewsFromContent } from './lib/content.js';
+if (seedFromContent()) console.log('seeded leaders/facts from content/'); else { const n = syncNewsFromContent(); if (n) console.log('news sources synced from content/:', n); }
 const PUB = path.resolve('public'); const PORT = +process.env.PORT || 3300;
 const BASE = (process.env.PUBLIC_URL || `http://localhost:${PORT}`).replace(/\/$/, '');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD; const SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
@@ -28,10 +28,14 @@ function search(list, q, n = 12) {
     out.push([r, ph + (r.k.startsWith(toks.join(' ')) ? 0 : 1) + r.k.length / 1000]); } }
   return out.sort((a, b) => a[1] - b[1]).slice(0, n).map(x => x[0]);
 }
+// news source is shown only when the article names the person currently displayed
+const nfold = s => (s || "").normalize("NFD").replace(/\p{M}/gu, "").replace(/đ/gi, "d").toLowerCase().replace(/\s+/g, " ").trim();
+const newsFor = (l, name) => { const n = JSON.parse(l.news || 'null'); if (!n) return null; if (['verified', 'updated'].includes(n.status) && n.url && nfold(n.name) === nfold(name)) return { status: n.status, title: n.title, url: n.url, date: n.date, site: n.site, prev_name: n.prev_name || null };
+  if (n.status === 'conflict' && n.other) return { status: 'conflict', other: n.other, title: n.title || null, url: n.url || null, date: n.date || null, site: n.site }; return null; };
 const leadersOf = code => db.prepare('SELECT * FROM leaders WHERE province=?').all(code).map(l => {
   const pub = l.name && ['approved'].includes(l.status);
   return { role: l.role, name: pub ? l.name : l.cand_name, status: pub ? 'approved' : l.cand_status, source_url: pub ? l.source_url : l.cand_source_url,
-    date: pub ? l.verified_at : l.cand_fetched_at, evidence: pub ? null : JSON.parse(l.evidence || 'null'), flag: l.flag };
+    date: pub ? l.verified_at : l.cand_fetched_at, evidence: pub ? null : JSON.parse(l.evidence || 'null'), flag: l.flag, news: newsFor(l, pub ? l.name : l.cand_name) };
 });
 const factsOf = code => db.prepare("SELECT id,kind,text,source_url,verified_at,status FROM facts WHERE province=? AND status IN ('auto','approved') ORDER BY kind='summary' DESC, id").all(code);
 const detail = p => ({ ...p, leaders: leadersOf(p.code), facts: factsOf(p.code) });

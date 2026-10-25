@@ -15,6 +15,11 @@ jobs:
       - run: node scripts/leaders-refresh.mjs
         working-directory: app
         env: { SUMMARY_FILE: /tmp/leaders-summary.md }
+      - name: Cross-check with xaydungchinhsach.chinhphu.vn (may be unreachable from US runners; then run `npm run news-verify` on the Mac/box)
+        run: node scripts/news-verify.mjs
+        working-directory: app
+        continue-on-error: true
+        timeout-minutes: 30
       - uses: peter-evans/create-pull-request@v7
         with:
           branch: bot/leaders-refresh

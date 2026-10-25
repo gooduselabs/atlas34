@@ -43,3 +43,6 @@ curl -X POST https://<host>/api/bulk -H 'Content-Type: application/json' -H 'X-A
 - Chủ quyền: ẩn ranh giới biển/tranh chấp, ẩn tên biển/đảo nước ngoài; mặt nạ biển phía đông; Hoàng Sa (Đà Nẵng), Trường Sa (Khánh Hòa) luôn hiển thị từ lớp hành chính. Nhãn "Biển Đông".
 - Ảnh vệ tinh tùy chọn: EOX Sentinel-2 cloudless 2016 (CC BY 4.0), tối đa z13.
 - © OpenStreetMap contributors (ODbL) · © OpenMapTiles.
+
+## Xác thực lãnh đạo qua báo Chính phủ
+`cd app && npm run news-verify` tìm trên https://xaydungchinhsach.chinhphu.vn (tìm theo tên và theo "<chức danh> <tỉnh>", chỉ bài từ 01/07/2025), ghi nguồn bài báo (tiêu đề, link, ngày) vào `content/leaders.json` (`news`). Bài mới hơn bổ nhiệm người khác → cập nhật ứng viên + cờ `news_updated`; mâu thuẫn không rõ → cờ `news_conflict` để admin duyệt. Crawler lịch sự (UA rõ ràng, kiểm tra robots.txt, ≥1,5 s/yêu cầu). Docker tự đồng bộ kết quả mới từ `content/` khi khởi động.

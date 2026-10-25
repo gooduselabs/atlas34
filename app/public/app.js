@@ -17,12 +17,12 @@ const api = u => window.__api ? window.__api(u) : j(u);
 // ---------- THEME ----------
 const PAL = { light: { ink: '#1B1A17', paper2: '#F7F2E7', red: '#C8341E', hov: '#E9C46A', m2: '#E2BE7A', m3: '#D9A441', ph: '#F3E3C0', sea: '#DCE3DE', land: '#E2DED6', mask: '#BFD3D0', wall: '#7A3B2E', halo: 'rgba(247,242,231,.9)', white: '#FFFFFF' },
   dark: { ink: '#EDE6D6', paper2: '#2A2720', red: '#F0613F', hov: '#8C6A1E', m2: '#5A4A28', m3: '#7A5E24', ph: '#2E2A1E', sea: '#1C2A2B', land: '#1E1D17', mask: '#121D1E', wall: '#D9A98C', halo: 'rgba(23,22,15,.9)', white: '#17160F' } };
-const theme = () => document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+const theme = () => document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'; // default LIGHT; dark only when the user toggled it
 const T = () => PAL[theme()];
 function setTheme(t) { try { t ? localStorage.setItem('a34-theme', t) : localStorage.removeItem('a34-theme'); } catch {} if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; applyTheme(); }
 function applyTheme() { window.atlasTheme = theme(); $('#themeb')?.setAttribute('aria-pressed', theme() === 'dark'); if (map?.isStyleLoaded?.() && map.getLayer('prov-fill')) applyMapTheme(); }
 $('#themeb').onclick = () => setTheme(theme() === 'dark' ? 'light' : 'dark');
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (!document.documentElement.dataset.theme) applyTheme(); });
+
 window.atlasTheme = theme();
 // ---------- UI HELPERS ----------
 let toastEl, toastTm;
@@ -222,11 +222,16 @@ function showIndex() {
 }
 function leaderHTML(l) {
   if (!l) return '<div class="meta">Chưa có dữ liệu từ nguồn.</div>';
-  const st = l.status === 'approved' ? '<span class="stamp ok">✓ Đã duyệt</span>' : l.status === 'verified' ? '<span class="stamp ok">Đối chiếu cổng TTĐT</span>' : '<span class="stamp warn">Chưa kiểm chứng</span>';
+  const nw = l.news; const ddmm = d => d ? d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4) : '';
+  const srcN = nw?.url && nw.status !== 'conflict' ? `<div class="meta news-src">Nguồn: <a class="newsl" href="${esc(nw.url)}" target="_blank" rel="noopener">${esc(nw.title)}</a> — ${esc(nw.site || 'Xây dựng Chính sách, Pháp luật')} (${ddmm(nw.date)})</div>` : '';
+  const cfN = nw?.status === 'conflict' ? `<div class="meta" style="color:var(--red)">Cần duyệt: bài mới hơn nêu ${esc(nw.other.name)} — <a href="${esc(nw.other.url)}" target="_blank" rel="noopener">${esc(nw.other.title)}</a> (${ddmm(nw.other.date)})</div>` : '';
+  const st0 = l.status === 'approved' ? '<span class="stamp ok">✓ Đã duyệt</span>' : srcN ? '<span class="stamp ok">✓ Đối chiếu báo Chính phủ</span>' : l.status === 'verified' ? '<span class="stamp ok">Đối chiếu cổng TTĐT</span>' : '<span class="stamp warn">Chưa kiểm chứng</span>';
   const ev = l.evidence; const extra = [];
   if (ev?.portal?.found) extra.push(`tên xuất hiện trên <a href="${esc(ev.portal.url)}" target="_blank" rel="noopener nofollow">cổng TTĐT</a>`);
   if (l.flag === 'conflict' && ev?.wikidata) extra.push(`<span style="color:var(--red)">Wikidata ghi khác: ${esc(ev.wikidata.value)}</span>`);
-  return `<div class="nm">${esc(l.name)}</div>${st}<div class="meta">Nguồn: <a class="srcl" href="${esc(l.source_url)}" target="_blank" rel="noopener nofollow">${esc(new URL(l.source_url).hostname)}</a> · ${l.status === 'approved' ? 'duyệt' : 'lấy'} ngày ${dt(l.date)}${extra.length ? '<br>' + extra.join(' · ') : ''}</div>`;
+  const st = st0;
+  if (srcN) return `<div class="nm">${esc(l.name)}</div>${st}${srcN}`;
+  return `<div class="nm">${esc(l.name)}</div>${st}<div class="meta">Nguồn: <a class="srcl" href="${esc(l.source_url)}" target="_blank" rel="noopener nofollow">${esc(new URL(l.source_url).hostname)}</a> · ${l.status === 'approved' ? 'duyệt' : 'lấy'} ngày ${dt(l.date)}${extra.length ? '<br>' + extra.join(' · ') : ''}</div>${srcN}${cfN}`;
 }
 async function showProvince(code) {
   setTab('map'); const p = S.byCode[code]; const first = S.cur !== code; S.cur = code; setTitle(`${p.full} sau sắp xếp`);

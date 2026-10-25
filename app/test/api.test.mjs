@@ -61,3 +61,9 @@ test('ward page: canonical redirect, SEO, sitemap has 3321 wards', async () => {
   assert.equal((await j('/xa/khong-co-99999')).s, 404);
   const sm = (await j('/sitemap.xml')).d; assert.equal((sm.match(/\/xa\//g) || []).length, 3321); assert.match(sm, /hang-loat/); });
 test('bulk page renders', async () => { const p = await j('/hang-loat'); assert.match(p.d, /hàng loạt/i); });
+test('leader news source link (Báo Chính phủ / Xây dựng Chính sách, Pháp luật)', async () => {
+  const { d } = await j('/api/province/51'); const l = d.leaders.find(x => x.role === 'bi_thu');
+  assert.ok(l.news, 'Quảng Ngãi bí thư has a news source'); assert.match(l.news.url, /^https:\/\/xaydungchinhsach\.chinhphu\.vn\/.+\.htm$/);
+  assert.ok(l.news.title.includes(l.name), 'article title names the displayed leader'); assert.match(l.news.date, /^\d{4}-\d{2}-\d{2}$/);
+  const js = await (await fetch(B + '/app.js')).text(); assert.match(js, /class="newsl" href="\$\{esc\(nw\.url\)\}" target="_blank" rel="noopener"/); assert.match(js, /Xây dựng Chính sách, Pháp luật/);
+});

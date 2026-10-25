@@ -7,12 +7,13 @@
   "source_name": null,
   "verified_at": null,
   "status": null,
-  "cand_name": "Trần Đức Thắng",
-  "cand_source_url": "https://vi.wikipedia.org/wiki/H%C3%A0_N%E1%BB%99i",
-  "cand_fetched_at": "2026-10-25T03:50:53.741Z",
-  "cand_status": "unverified",
+  "cand_name": "Nguyễn Duy Ngọc",
+  "cand_source_url": "https://xaydungchinhsach.chinhphu.vn/bo-chinh-tri-dieu-dong-phan-cong-chi-dinh-dong-chi-nguyen-duy-ngoc-giu-chuc-bi-thu-thanh-uy-ha-noi-119251104100611085.htm",
+  "cand_fetched_at": "2026-10-25T10:15:58.764Z",
+  "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/H%C3%A0_N%E1%BB%99i\",\"value\":\"Trần Đức Thắng\"},\"portal\":{\"url\":\"https://hanoi.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": "news_updated",
+  "news": "{\"status\": \"updated\", \"name\": \"Nguyễn Duy Ngọc\", \"title\": \"Bộ Chính trị điều động, phân công, chỉ định đồng chí Nguyễn Duy Ngọc giữ chức Bí thư Thành ủy Hà Nội\", \"url\": \"https://xaydungchinhsach.chinhphu.vn/bo-chinh-tri-dieu-dong-phan-cong-chi-dinh-dong-chi-nguyen-duy-ngoc-giu-chuc-bi-thu-thanh-uy-ha-noi-119251104100611085.htm\", \"date\": \"2025-11-04\", \"site\": \"Xây dựng Chính sách, Pháp luật\", \"checked_at\": \"2026-10-25T10:22:58.500Z\", \"queries\": [\"Nguyễn Duy Ngọc\", \"Bí thư Thành ủy Hà Nội\"], \"prev_name\": \"Trần Đức Thắng\"}"
  },
  {
   "province": "01",
@@ -27,7 +28,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/H%C3%A0_N%E1%BB%99i\",\"value\":\"Vũ Đại Thắng\"},\"wikidata\":{\"url\":\"https://www.wikidata.org/wiki/Q1858\",\"value\":\"Trần Sỹ Thanh\"},\"portal\":{\"url\":\"https://hanoi.gov.vn/\",\"found\":true}}",
-  "flag": "wikidata_stale"
+  "flag": "wikidata_stale",
+  "news": "{\"status\":\"verified\",\"name\":\"Vũ Đại Thắng\",\"title\":\"Tóm tắt tiểu sử đồng chí Vũ Đại Thắng, Chủ tịch UBND thành phố Hà Nội\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tom-tat-tieu-su-dong-chi-vu-dai-thang-chu-tich-ubnd-thanh-pho-ha-noi-119251128150414483.htm\",\"date\":\"2025-12-03\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:23:04.500Z\",\"queries\":[\"Vũ Đại Thắng\",\"Chủ tịch UBND thành phố Hà Nội\"]}"
  },
  {
   "province": "04",
@@ -42,7 +44,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Cao_B%E1%BA%B1ng\",\"value\":\"Phan Thăng An\"},\"portal\":{\"url\":\"http://www.caobang.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Phan Thăng An\",\"title\":\"TIỂU SỬ ĐỒNG CHÍ PHAN THĂNG AN, TÂN BÍ THƯ TỈNH ỦY CAO BẰNG\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-phan-thang-an-tan-bi-thu-tinh-uy-cao-bang-119251203200515451.htm\",\"date\":\"2025-12-05\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:23:10.500Z\",\"queries\":[\"Phan Thăng An\",\"Bí thư Tỉnh ủy Cao Bằng\"]}"
  },
  {
   "province": "04",
@@ -57,7 +60,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Cao_B%E1%BA%B1ng\",\"value\":\"Lê Hải Hòa\"},\"portal\":{\"url\":\"http://www.caobang.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Lê Hải Hòa\",\"checked_at\":\"2026-10-25T10:23:16.509Z\",\"queries\":[\"Lê Hải Hòa\",\"Chủ tịch UBND tỉnh Cao Bằng\"]}"
  },
  {
   "province": "08",
@@ -72,7 +76,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Tuy%C3%AAn_Quang\",\"value\":\"Hầu A Lềnh\"},\"portal\":{\"url\":\"https://tuyenquang.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Hầu A Lềnh\",\"checked_at\":\"2026-10-25T10:23:22.500Z\",\"queries\":[\"Hầu A Lềnh\",\"Bí thư Tỉnh ủy Tuyên Quang\"]}"
  },
  {
   "province": "08",
@@ -87,7 +92,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Tuy%C3%AAn_Quang\",\"value\":\"Phan Huy Ngọc\"},\"portal\":{\"url\":\"https://tuyenquang.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Phan Huy Ngọc\",\"checked_at\":\"2026-10-25T10:23:28.512Z\",\"queries\":[\"Phan Huy Ngọc\",\"Chủ tịch UBND tỉnh Tuyên Quang\"]}"
  },
  {
   "province": "11",
@@ -102,7 +108,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/%C4%90i%E1%BB%87n_Bi%C3%AAn\",\"value\":\"Trần Tiến Dũng\"},\"portal\":{\"url\":\"http://www.dienbien.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Trần Tiến Dũng\",\"checked_at\":\"2026-10-25T10:23:34.506Z\",\"queries\":[\"Trần Tiến Dũng\",\"Bí thư Tỉnh ủy Điện Biên\"]}"
  },
  {
   "province": "11",
@@ -117,7 +124,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/%C4%90i%E1%BB%87n_Bi%C3%AAn\",\"value\":\"Lê Thành Đô\"},\"wikidata\":{\"url\":\"https://www.wikidata.org/wiki/Q36955\",\"value\":\"Mùa A Sơn\"},\"portal\":{\"url\":\"http://www.dienbien.gov.vn\",\"found\":false}}",
-  "flag": "conflict"
+  "flag": "conflict",
+  "news": "{\"status\":\"not_found\",\"name\":\"Lê Thành Đô\",\"checked_at\":\"2026-10-25T10:23:40.509Z\",\"queries\":[\"Lê Thành Đô\",\"Chủ tịch UBND tỉnh Điện Biên\"]}"
  },
  {
   "province": "12",
@@ -132,7 +140,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Lai_Ch%C3%A2u\",\"value\":\"Lê Minh Ngân\"},\"portal\":{\"url\":\"http://www.laichau.gov.vn\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Lê Minh Ngân\",\"title\":\"Tiểu sử đồng chí Lê Minh Ngân, tân Bí thư Tỉnh ủy Lai Châu\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-le-minh-ngan-tan-bi-thu-tinh-uy-lai-chau-119250919093414814.htm\",\"date\":\"2025-09-21\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:23:46.515Z\",\"queries\":[\"Lê Minh Ngân\",\"Bí thư Tỉnh ủy Lai Châu\"]}"
  },
  {
   "province": "12",
@@ -147,7 +156,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Lai_Ch%C3%A2u\",\"value\":\"Hà Quang Trung\"},\"portal\":{\"url\":\"http://www.laichau.gov.vn\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Hà Quang Trung\",\"checked_at\":\"2026-10-25T10:23:52.512Z\",\"queries\":[\"Hà Quang Trung\",\"Chủ tịch UBND tỉnh Lai Châu\"]}"
  },
  {
   "province": "14",
@@ -162,7 +172,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/S%C6%A1n_La\",\"value\":\"Hoàng Văn Nghiệm\"},\"portal\":{\"url\":\"http://www.sonla.gov.vn\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Hoàng Văn Nghiệm\",\"title\":\"Tiểu sử đồng chí Hoàng Văn Nghiệm, tân Bí thư Tỉnh ủy Sơn La\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-hoang-van-nghiem-tan-bi-thu-tinh-uy-son-la-119251012134908394.htm\",\"date\":\"2025-10-13\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:23:58.515Z\",\"queries\":[\"Hoàng Văn Nghiệm\",\"Bí thư Tỉnh ủy Sơn La\"]}"
  },
  {
   "province": "14",
@@ -177,7 +188,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/S%C6%A1n_La\",\"value\":\"Nguyễn Đình Việt\"},\"portal\":{\"url\":\"http://www.sonla.gov.vn\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Nguyễn Đình Việt\",\"checked_at\":\"2026-10-25T10:24:04.518Z\",\"queries\":[\"Nguyễn Đình Việt\",\"Chủ tịch UBND tỉnh Sơn La\"]}"
  },
  {
   "province": "15",
@@ -192,7 +204,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/L%C3%A0o_Cai\",\"value\":\"Dương Quốc Huy\"},\"portal\":{\"url\":\"http://www.laocai.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Dương Quốc Huy\",\"title\":\"Bộ Chính trị chỉ định đồng chí Dương Quốc Huy giữ chức Bí thư Tỉnh ủy Lào Cai\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/bo-chinh-tri-chi-dinh-dong-chi-duong-quoc-huy-giu-chuc-bi-thu-tinh-uy-lao-cai-119260228103327539.htm\",\"date\":\"2026-03-03\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:24:10.521Z\",\"queries\":[\"Dương Quốc Huy\",\"Bí thư Tỉnh ủy Lào Cai\"]}"
  },
  {
   "province": "15",
@@ -207,7 +220,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/L%C3%A0o_Cai\",\"value\":\"Nguyễn Tuấn Anh\"},\"portal\":{\"url\":\"http://www.laocai.gov.vn\",\"found\":true}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Nguyễn Tuấn Anh\",\"title\":\"Tiểu sử đồng chí Nguyễn Tuấn Anh, tân Chủ tịch UBND tỉnh Lào Cai\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-nguyen-tuan-anh-tan-chu-tich-ubnd-tinh-lao-cai-119251114104913365.htm\",\"date\":\"2025-11-14\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:24:16.527Z\",\"queries\":[\"Nguyễn Tuấn Anh\",\"Chủ tịch UBND tỉnh Lào Cai\"]}"
  },
  {
   "province": "19",
@@ -222,7 +236,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Th%C3%A1i_Nguy%C3%AAn\",\"value\":\"Trịnh Xuân Trường\"},\"portal\":{\"url\":\"http://thainguyen.gov.vn/\",\"found\":true}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Trịnh Xuân Trường\",\"title\":\"Tiểu sử đồng chí Trịnh Xuân Trường, Bí thư Tỉnh ủy Thái Nguyên\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-trinh-xuan-truong-bi-thu-tinh-uy-thai-nguyen-119251001095111453.htm\",\"date\":\"2025-10-03\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:24:22.522Z\",\"queries\":[\"Trịnh Xuân Trường\",\"Bí thư Tỉnh ủy Thái Nguyên\"]}"
  },
  {
   "province": "19",
@@ -237,7 +252,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Th%C3%A1i_Nguy%C3%AAn\",\"value\":\"Nguyễn Thế Mạnh\"},\"portal\":{\"url\":\"http://thainguyen.gov.vn/\",\"found\":true}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Nguyễn Thế Mạnh\",\"title\":\"Tiểu sử đồng chí Nguyễn Thế Mạnh, tân Chủ tịch UBND tỉnh Thái Nguyên\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-nguyen-the-manh-tan-chu-tich-ubnd-tinh-thai-nguyen-11926092515364252.htm\",\"date\":\"2026-09-25\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:24:28.527Z\",\"queries\":[\"Nguyễn Thế Mạnh\",\"Chủ tịch UBND tỉnh Thái Nguyên\"]}"
  },
  {
   "province": "20",
@@ -252,7 +268,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/L%E1%BA%A1ng_S%C6%A1n\",\"value\":\"Hoàng Quốc Khánh\"},\"portal\":{\"url\":\"http://www.langson.gov.vn\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Hoàng Quốc Khánh\",\"title\":\"Tiểu sử đồng chí Hoàng Quốc Khánh, tân Bí thư Tỉnh ủy Lạng Sơn\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-hoang-quoc-khanh-tan-bi-thu-tinh-uy-lang-son-119251015122054586.htm\",\"date\":\"2025-10-15\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:24:34.534Z\",\"queries\":[\"Hoàng Quốc Khánh\",\"Bí thư Tỉnh ủy Lạng Sơn\"]}"
  },
  {
   "province": "20",
@@ -267,7 +284,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/L%E1%BA%A1ng_S%C6%A1n\",\"value\":\"Nguyễn Cảnh Toàn\"},\"portal\":{\"url\":\"http://www.langson.gov.vn\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Nguyễn Cảnh Toàn\",\"title\":\"Tiểu sử đồng chí Nguyễn Cảnh Toàn, tân Chủ tịch UBND tỉnh Lạng Sơn\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-nguyen-canh-toan-tan-chu-tich-ubnd-tinh-lang-son-119251020194712214.htm\",\"date\":\"2025-10-26\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:24:40.535Z\",\"queries\":[\"Nguyễn Cảnh Toàn\",\"Chủ tịch UBND tỉnh Lạng Sơn\"]}"
  },
  {
   "province": "22",
@@ -282,7 +300,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Qu%E1%BA%A3ng_Ninh\",\"value\":\"Quản Minh Cường\"},\"portal\":{\"url\":\"http://quangninh.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Quản Minh Cường\",\"title\":\"TIỂU SỬ ĐỒNG CHÍ QUẢN MINH CƯỜNG, TÂN BÍ THƯ TỈNH ỦY QUẢNG NINH\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-quan-minh-cuong-tan-bi-thu-tinh-uy-quang-ninh-119251203101616584.htm\",\"date\":\"2025-12-07\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:24:46.535Z\",\"queries\":[\"Quản Minh Cường\",\"Bí thư Thành ủy Quảng Ninh\"]}"
  },
  {
   "province": "22",
@@ -297,7 +316,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Qu%E1%BA%A3ng_Ninh\",\"value\":\"Bùi Văn Khắng\"},\"portal\":{\"url\":\"http://quangninh.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Bùi Văn Khắng\",\"title\":\"Tân Phó Bí thư Tỉnh ủy Quảng Ninh Bùi Văn Khắng được bầu giữ chức Chủ tịch UBND tỉnh\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tan-pho-bi-thu-tinh-uy-quang-ninh-bui-van-khang-duoc-bau-giu-chuc-chu-tich-ubnd-tinh-119250922134336564.htm\",\"date\":\"2025-09-22\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:24:52.535Z\",\"queries\":[\"Bùi Văn Khắng\",\"Chủ tịch UBND thành phố Quảng Ninh\"]}"
  },
  {
   "province": "24",
@@ -312,7 +332,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/B%E1%BA%AFc_Ninh\",\"value\":\"Nguyễn Hồng Thái\"},\"portal\":{\"url\":\"http://www.bacninh.gov.vn\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Nguyễn Hồng Thái\",\"title\":\"Tiểu sử đồng chí Nguyễn Hồng Thái, Bí thư Tỉnh ủy Bắc Ninh\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-nguyen-hong-thai-bi-thu-tinh-uy-bac-ninh-119250930132050503.htm\",\"date\":\"2025-10-05\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:24:58.538Z\",\"queries\":[\"Nguyễn Hồng Thái\",\"Bí thư Thành ủy Bắc Ninh\"]}"
  },
  {
   "province": "24",
@@ -327,7 +348,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/B%E1%BA%AFc_Ninh\",\"value\":\"Phạm Hoàng Sơn\"},\"portal\":{\"url\":\"http://www.bacninh.gov.vn\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Phạm Hoàng Sơn\",\"title\":\"Đồng chí Phạm Hoàng Sơn được bầu giữ chức Chủ tịch UBND tỉnh Bắc Ninh\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/dong-chi-pham-hoang-son-duoc-bau-giu-chuc-chu-tich-ubnd-tinh-bac-ninh-119251117175809142.htm\",\"date\":\"2025-11-17\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:25:04.541Z\",\"queries\":[\"Phạm Hoàng Sơn\",\"Chủ tịch UBND thành phố Bắc Ninh\"]}"
  },
  {
   "province": "25",
@@ -342,7 +364,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Ph%C3%BA_Th%E1%BB%8D\",\"value\":\"Phạm Đại Dương\"},\"portal\":{\"url\":\"https://phutho.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Phạm Đại Dương\",\"title\":\"TIỂU SỬ ĐỒNG CHÍ PHẠM ĐẠI DƯƠNG, TÂN BÍ THƯ TỈNH ỦY PHÚ THỌ\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-pham-dai-duong-tan-bi-thu-tinh-uy-phu-tho-119260109161326785.htm\",\"date\":\"2026-01-16\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:25:10.543Z\",\"queries\":[\"Phạm Đại Dương\",\"Bí thư Tỉnh ủy Phú Thọ\"]}"
  },
  {
   "province": "25",
@@ -357,7 +380,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Ph%C3%BA_Th%E1%BB%8D\",\"value\":\"Trần Duy Đông\"},\"portal\":{\"url\":\"https://phutho.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Trần Duy Đông\",\"checked_at\":\"2026-10-25T10:25:16.548Z\",\"queries\":[\"Trần Duy Đông\",\"Chủ tịch UBND tỉnh Phú Thọ\"]}"
  },
  {
   "province": "31",
@@ -372,7 +396,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/H%E1%BA%A3i_Ph%C3%B2ng\",\"value\":\"Lê Ngọc Châu\"},\"portal\":{\"url\":\"http://haiphong.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Lê Ngọc Châu\",\"checked_at\":\"2026-10-25T10:25:22.549Z\",\"queries\":[\"Lê Ngọc Châu\",\"Bí thư Thành ủy Hải Phòng\"]}"
  },
  {
   "province": "31",
@@ -387,7 +412,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/H%E1%BA%A3i_Ph%C3%B2ng\",\"value\":\"Đỗ Thành Trung\"},\"portal\":{\"url\":\"http://haiphong.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Đỗ Thành Trung\",\"checked_at\":\"2026-10-25T10:25:28.543Z\",\"queries\":[\"Đỗ Thành Trung\",\"Chủ tịch UBND thành phố Hải Phòng\"]}"
  },
  {
   "province": "33",
@@ -402,7 +428,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/H%C6%B0ng_Y%C3%AAn\",\"value\":\"Phạm Quang Ngọc\"},\"portal\":{\"url\":\"https://hungyen.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Phạm Quang Ngọc\",\"checked_at\":\"2026-10-25T10:25:40.458Z\",\"queries\":[\"Phạm Quang Ngọc\",\"Bí thư Tỉnh ủy Hưng Yên\"]}"
  },
  {
   "province": "33",
@@ -412,12 +439,13 @@
   "source_name": null,
   "verified_at": null,
   "status": null,
-  "cand_name": "Nguyễn Mạnh Quyền",
-  "cand_source_url": "https://vi.wikipedia.org/wiki/H%C6%B0ng_Y%C3%AAn",
-  "cand_fetched_at": "2026-10-25T03:50:53.741Z",
-  "cand_status": "unverified",
+  "cand_name": "Phạm Quang Ngọc",
+  "cand_source_url": "https://xaydungchinhsach.chinhphu.vn/dong-chi-pham-quang-ngoc-giu-chuc-chu-tich-ubnd-tinh-hung-yen-nhiem-ky-2021-2026-119251112160022454.htm",
+  "cand_fetched_at": "2026-10-25T10:18:40.832Z",
+  "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/H%C6%B0ng_Y%C3%AAn\",\"value\":\"Nguyễn Mạnh Quyền\"},\"portal\":{\"url\":\"https://hungyen.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": "news_updated",
+  "news": "{\"status\": \"updated\", \"name\": \"Phạm Quang Ngọc\", \"title\": \"Đồng chí Phạm Quang Ngọc giữ chức Chủ tịch UBND tỉnh Hưng Yên nhiệm kỳ 2021 – 2026\", \"url\": \"https://xaydungchinhsach.chinhphu.vn/dong-chi-pham-quang-ngoc-giu-chuc-chu-tich-ubnd-tinh-hung-yen-nhiem-ky-2021-2026-119251112160022454.htm\", \"date\": \"2025-11-12\", \"site\": \"Xây dựng Chính sách, Pháp luật\", \"checked_at\": \"2026-10-25T10:25:46.469Z\", \"queries\": [\"Phạm Quang Ngọc\", \"Chủ tịch UBND tỉnh Hưng Yên\"], \"prev_name\": \"Nguyễn Mạnh Quyền\"}"
  },
  {
   "province": "37",
@@ -432,7 +460,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Ninh_B%C3%ACnh\",\"value\":\"Trần Huy Tuấn\"},\"portal\":{\"url\":\"http://www.ninhbinh.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Trần Huy Tuấn\",\"title\":\"Đồng chí Trần Huy Tuấn được bầu giữ chức Bí thư Tỉnh ủy Ninh Bình\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/dong-chi-tran-huy-tuan-duoc-bau-giu-chuc-bi-thu-tinh-uy-ninh-binh-119260302192322976.htm\",\"date\":\"2026-03-03\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:25:52.466Z\",\"queries\":[\"Trần Huy Tuấn\",\"Bí thư Tỉnh ủy Ninh Bình\"]}"
  },
  {
   "province": "37",
@@ -447,7 +476,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Ninh_B%C3%ACnh\",\"value\":\"Nguyễn Thanh Bình\"},\"portal\":{\"url\":\"http://www.ninhbinh.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Nguyễn Thanh Bình\",\"title\":\"Tiểu sử đồng chí NGUYỄN THANH BÌNH, tân Chủ tịch UBND tỉnh Ninh Bình\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-nguyen-thanh-binh-tan-chu-tich-ubnd-tinh-ninh-binh-1192603091109541.htm\",\"date\":\"2026-03-12\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:26:05.480Z\",\"queries\":[\"Nguyễn Thanh Bình\",\"Chủ tịch UBND tỉnh Ninh Bình\"]}"
  },
  {
   "province": "38",
@@ -462,7 +492,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Thanh_H%C3%B3a\",\"value\":\"Lê Đức Thái\"},\"portal\":{\"url\":\"https://thanhhoa.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Lê Đức Thái\",\"checked_at\":\"2026-10-25T10:26:15.760Z\",\"queries\":[\"Lê Đức Thái\",\"Bí thư Tỉnh ủy Thanh Hoá\"]}"
  },
  {
   "province": "38",
@@ -477,7 +508,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Thanh_H%C3%B3a\",\"value\":\"Tô Anh Dũng\"},\"portal\":{\"url\":\"https://thanhhoa.gov.vn\",\"found\":true}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Tô Anh Dũng\",\"checked_at\":\"2026-10-25T10:26:21.768Z\",\"queries\":[\"Tô Anh Dũng\",\"Chủ tịch UBND tỉnh Thanh Hoá\"]}"
  },
  {
   "province": "40",
@@ -492,7 +524,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Ngh%E1%BB%87_An\",\"value\":\"Nguyễn Khắc Thận\"},\"portal\":{\"url\":\"http://www.nghean.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Nguyễn Khắc Thận\",\"title\":\"TIỂU SỬ ĐỒNG CHÍ NGUYỄN KHẮC THẬN, TÂN BÍ THƯ TỈNH ỦY NGHỆ AN\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-nguyen-khac-than-tan-bi-thu-tinh-uy-nghe-an-119251111082053782.htm\",\"date\":\"2025-11-13\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:26:27.765Z\",\"queries\":[\"Nguyễn Khắc Thận\",\"Bí thư Tỉnh ủy Nghệ An\"]}"
  },
  {
   "province": "40",
@@ -507,7 +540,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Ngh%E1%BB%87_An\",\"value\":\"Võ Trọng Hải\"},\"portal\":{\"url\":\"http://www.nghean.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Võ Trọng Hải\",\"title\":\"Đồng chí Võ Trọng Hải được bầu giữ chức Chủ tịch UBND tỉnh Nghệ An\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/dong-chi-vo-trong-hai-duoc-bau-giu-chuc-chu-tich-ubnd-tinh-nghe-an-119251118174328629.htm\",\"date\":\"2025-11-18\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:26:33.761Z\",\"queries\":[\"Võ Trọng Hải\",\"Chủ tịch UBND tỉnh Nghệ An\"]}"
  },
  {
   "province": "42",
@@ -522,7 +556,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/H%C3%A0_T%C4%A9nh\",\"value\":\"Nguyễn Duy Lâm\"},\"portal\":{\"url\":\"http://www.hatinh.gov.vn/\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Nguyễn Duy Lâm\",\"checked_at\":\"2026-10-25T10:26:39.767Z\",\"queries\":[\"Nguyễn Duy Lâm\",\"Bí thư Tỉnh ủy Hà Tĩnh\"]}"
  },
  {
   "province": "42",
@@ -537,7 +572,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/H%C3%A0_T%C4%A9nh\",\"value\":\"Phan Thiên Định\"},\"portal\":{\"url\":\"http://www.hatinh.gov.vn/\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Phan Thiên Định\",\"title\":\"Đồng chí Phan Thiên Định được bầu giữ chức Chủ tịch UBND tỉnh Hà Tĩnh\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/dong-chi-phan-thien-dinh-duoc-bau-giu-chuc-chu-tich-ubnd-tinh-ha-tinh-119251118172801687.htm\",\"date\":\"2025-11-18\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:26:45.770Z\",\"queries\":[\"Phan Thiên Định\",\"Chủ tịch UBND tỉnh Hà Tĩnh\"]}"
  },
  {
   "province": "44",
@@ -552,7 +588,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Qu%E1%BA%A3ng_Tr%E1%BB%8B\",\"value\":\"Vương Quốc Tuấn\"},\"portal\":{\"url\":\"http://www.quangtri.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Vương Quốc Tuấn\",\"title\":\"Bộ Chính trị chỉ định đồng chí Vương Quốc Tuấn giữ chức Bí thư Tỉnh ủy Quảng Trị; đồng chí Bùi Hoàng Phương giữ chức Phó Bí thư Tỉnh ủy Quảng Trị\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/bo-chinh-tri-chi-dinh-dong-chi-vuong-quoc-tuan-giu-chuc-bi-thu-tinh-uy-quang-tri-dong-chi-bui-hoang-phuong-giu-chuc-pho-bi-thu-tinh-uy-quang-tri-11926092112083287.htm\",\"date\":\"2026-09-21\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:26:51.774Z\",\"queries\":[\"Vương Quốc Tuấn\",\"Bí thư Tỉnh ủy Quảng Trị\"]}"
  },
  {
   "province": "44",
@@ -567,7 +604,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Qu%E1%BA%A3ng_Tr%E1%BB%8B\",\"value\":\"Bùi Hoàng Phương\"},\"portal\":{\"url\":\"http://www.quangtri.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Bùi Hoàng Phương\",\"title\":\"Đồng chí Bùi Hoàng Phương được bầu giữ chức Chủ tịch UBND tỉnh Quảng Trị\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/dong-chi-bui-hoang-phuong-duoc-bau-giu-chuc-chu-tich-ubnd-tinh-quang-tri-119260922073247332.htm\",\"date\":\"2026-09-22\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:26:57.774Z\",\"queries\":[\"Bùi Hoàng Phương\",\"Chủ tịch UBND tỉnh Quảng Trị\"]}"
  },
  {
   "province": "46",
@@ -582,7 +620,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Hu%E1%BA%BF\",\"value\":\"Nguyễn Đình Trung\"},\"portal\":{\"url\":\"https://hue.gov.vn/vi-vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Nguyễn Đình Trung\",\"checked_at\":\"2026-10-25T10:27:03.775Z\",\"queries\":[\"Nguyễn Đình Trung\",\"Bí thư Thành ủy Huế\"]}"
  },
  {
   "province": "46",
@@ -597,7 +636,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Hu%E1%BA%BF\",\"value\":\"Lê Trí Thanh\"},\"wikidata\":{\"url\":\"https://www.wikidata.org/wiki/Q36399\",\"value\":\"Nguyễn Văn Phương\"},\"portal\":{\"url\":\"https://hue.gov.vn/vi-vn/\",\"found\":true}}",
-  "flag": "wikidata_stale"
+  "flag": "wikidata_stale",
+  "news": "{\"status\":\"verified\",\"name\":\"Lê Trí Thanh\",\"title\":\"Đồng chí Lê Trí Thanh được bầu giữ chức Chủ tịch UBND thành phố Huế\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/dong-chi-le-tri-thanh-duoc-bau-giu-chuc-chu-tich-ubnd-thanh-pho-hue-119260726162952647.htm\",\"date\":\"2026-07-27\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:27:09.780Z\",\"queries\":[\"Lê Trí Thanh\",\"Chủ tịch UBND thành phố Huế\"]}"
  },
  {
   "province": "48",
@@ -612,7 +652,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/%C4%90%C3%A0_N%E1%BA%B5ng\",\"value\":\"Lê Ngọc Quang\"},\"portal\":{\"url\":\"http://www.danang.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Lê Ngọc Quang\",\"title\":\"Tiểu sử đồng chí Lê Ngọc Quang, tân Bí thư Thành ủy Đà Nẵng\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-le-ngoc-quang-tan-bi-thu-thanh-uy-da-nang-119251016224742883.htm\",\"date\":\"2025-11-02\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:27:15.778Z\",\"queries\":[\"Lê Ngọc Quang\",\"Bí thư Thành ủy Đà Nẵng\"]}"
  },
  {
   "province": "48",
@@ -622,12 +663,13 @@
   "source_name": null,
   "verified_at": null,
   "status": null,
-  "cand_name": "Nguyễn Mạnh Hùng",
-  "cand_source_url": "https://vi.wikipedia.org/wiki/%C4%90%C3%A0_N%E1%BA%B5ng",
-  "cand_fetched_at": "2026-10-25T03:50:53.741Z",
-  "cand_status": "unverified",
+  "cand_name": "Phạm Đức Ấn",
+  "cand_source_url": "https://xaydungchinhsach.chinhphu.vn/dong-chi-pham-duc-an-duoc-bau-giu-chuc-chu-tich-ubnd-thanh-pho-da-nang-119250908132233455.htm",
+  "cand_fetched_at": "2026-10-25T10:20:04.874Z",
+  "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/%C4%90%C3%A0_N%E1%BA%B5ng\",\"value\":\"Nguyễn Mạnh Hùng\"},\"wikidata\":{\"url\":\"https://www.wikidata.org/wiki/Q25282\",\"value\":\"Lê Trung Chinh\"},\"portal\":{\"url\":\"http://www.danang.gov.vn/\",\"found\":false}}",
-  "flag": "conflict"
+  "flag": "news_updated",
+  "news": "{\"status\": \"updated\", \"name\": \"Phạm Đức Ấn\", \"title\": \"Đồng chí Phạm Đức Ấn được bầu giữ chức Chủ tịch UBND thành phố Đà Nẵng\", \"url\": \"https://xaydungchinhsach.chinhphu.vn/dong-chi-pham-duc-an-duoc-bau-giu-chuc-chu-tich-ubnd-thanh-pho-da-nang-119250908132233455.htm\", \"date\": \"2025-09-08\", \"site\": \"Xây dựng Chính sách, Pháp luật\", \"checked_at\": \"2026-10-25T10:27:21.788Z\", \"queries\": [\"Phạm Đức Ấn\", \"Chủ tịch UBND thành phố Đà Nẵng\"], \"prev_name\": \"Nguyễn Mạnh Hùng\"}"
  },
  {
   "province": "51",
@@ -642,7 +684,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Qu%E1%BA%A3ng_Ng%C3%A3i\",\"value\":\"Hồ Văn Niên\"},\"portal\":{\"url\":\"http://www.quangngai.gov.vn/\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Hồ Văn Niên\",\"title\":\"Tiểu sử đồng chí Hồ Văn Niên, Bí thư Tỉnh ủy Quảng Ngãi\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-ho-van-nien-bi-thu-tinh-uy-quang-ngai-119251002153953369.htm\",\"date\":\"2025-10-05\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:27:27.788Z\",\"queries\":[\"Hồ Văn Niên\",\"Bí thư Tỉnh ủy Quảng Ngãi\"]}"
  },
  {
   "province": "51",
@@ -657,7 +700,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Qu%E1%BA%A3ng_Ng%C3%A3i\",\"value\":\"Nguyễn Đức Tâm\"},\"portal\":{\"url\":\"http://www.quangngai.gov.vn/\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Nguyễn Đức Tâm\",\"title\":\"Tiểu sử đồng chí Nguyễn Đức Tâm, tân Chủ tịch UBND tỉnh Quảng Ngãi\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-nguyen-duc-tam-tan-chu-tich-ubnd-tinh-quang-ngai-119260801202000817.htm\",\"date\":\"2026-08-02\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:27:33.789Z\",\"queries\":[\"Nguyễn Đức Tâm\",\"Chủ tịch UBND tỉnh Quảng Ngãi\"]}"
  },
  {
   "province": "52",
@@ -672,7 +716,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Gia_Lai\",\"value\":\"Thái Đại Ngọc\"},\"portal\":{\"url\":\"https://gialai.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Thái Đại Ngọc\",\"checked_at\":\"2026-10-25T10:27:39.788Z\",\"queries\":[\"Thái Đại Ngọc\",\"Bí thư Tỉnh ủy Gia Lai\"]}"
  },
  {
   "province": "52",
@@ -687,7 +732,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Gia_Lai\",\"value\":\"Phạm Anh Tuấn\"},\"portal\":{\"url\":\"https://gialai.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Phạm Anh Tuấn\",\"checked_at\":\"2026-10-25T10:27:45.793Z\",\"queries\":[\"Phạm Anh Tuấn\",\"Chủ tịch UBND tỉnh Gia Lai\"]}"
  },
  {
   "province": "56",
@@ -702,7 +748,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Kh%C3%A1nh_H%C3%B2a\",\"value\":\"Trần Phong\"},\"portal\":{\"url\":\"https://www.khanhhoa.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Trần Phong\",\"title\":\"Bộ Chính trị chuẩn y đồng chí Trần Phong giữ chức Bí thư Tỉnh ủy Khánh Hòa\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/bo-chinh-tri-chuan-y-dong-chi-tran-phong-giu-chuc-bi-thu-tinh-uy-khanh-hoa-119260403130237763.htm\",\"date\":\"2026-04-03\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:27:51.798Z\",\"queries\":[\"Trần Phong\",\"Bí thư Tỉnh ủy Khánh Hoà\"]}"
  },
  {
   "province": "56",
@@ -717,7 +764,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Kh%C3%A1nh_H%C3%B2a\",\"value\":\"Nguyễn Việt Hùng\"},\"portal\":{\"url\":\"https://www.khanhhoa.gov.vn/\",\"found\":true}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Nguyễn Việt Hùng\",\"checked_at\":\"2026-10-25T10:27:57.800Z\",\"queries\":[\"Nguyễn Việt Hùng\",\"Chủ tịch UBND tỉnh Khánh Hoà\"]}"
  },
  {
   "province": "66",
@@ -727,12 +775,13 @@
   "source_name": null,
   "verified_at": null,
   "status": null,
-  "cand_name": "Lương Nguyễn Minh Triết",
-  "cand_source_url": "https://vi.wikipedia.org/wiki/%C4%90%E1%BA%AFk_L%E1%BA%AFk",
-  "cand_fetched_at": "2026-10-25T03:50:53.741Z",
-  "cand_status": "unverified",
+  "cand_name": "Nguyễn Đình Trung",
+  "cand_source_url": "https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-nguyen-dinh-trung-bi-thu-tinh-uy-dak-lak-nhiem-ky-2025-2030-119250930152112573.htm",
+  "cand_fetched_at": "2026-10-25T10:20:46.893Z",
+  "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/%C4%90%E1%BA%AFk_L%E1%BA%AFk\",\"value\":\"Lương Nguyễn Minh Triết\"},\"portal\":{\"url\":\"http://www.daklak.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": "news_updated",
+  "news": "{\"status\": \"updated\", \"name\": \"Nguyễn Đình Trung\", \"title\": \"Tiểu sử đồng chí Nguyễn Đình Trung, Bí thư Tỉnh ủy Đắk Lắk nhiệm kỳ 2025 - 2030\", \"url\": \"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-nguyen-dinh-trung-bi-thu-tinh-uy-dak-lak-nhiem-ky-2025-2030-119250930152112573.htm\", \"date\": \"2025-10-03\", \"site\": \"Xây dựng Chính sách, Pháp luật\", \"checked_at\": \"2026-10-25T10:28:03.804Z\", \"queries\": [\"Nguyễn Đình Trung\", \"Bí thư Tỉnh ủy Đắk Lắk\"], \"prev_name\": \"Lương Nguyễn Minh Triết\"}"
  },
  {
   "province": "66",
@@ -747,7 +796,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/%C4%90%E1%BA%AFk_L%E1%BA%AFk\",\"value\":\"Đỗ Hữu Huy\"},\"portal\":{\"url\":\"http://www.daklak.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Đỗ Hữu Huy\",\"checked_at\":\"2026-10-25T10:28:09.814Z\",\"queries\":[\"Đỗ Hữu Huy\",\"Chủ tịch UBND tỉnh Đắk Lắk\"]}"
  },
  {
   "province": "68",
@@ -762,7 +812,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/L%C3%A2m_%C4%90%E1%BB%93ng\",\"value\":\"Y Thanh Hà Niê Kđăm\"},\"portal\":{\"url\":\"http://www.lamdong.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Y Thanh Hà Niê Kđăm\",\"title\":\"Đồng chí Y Thanh Hà Niê Kđăm giữ chức Bí thư Tỉnh ủy Lâm Đồng nhiệm kỳ 2025 - 2030\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/dong-chi-y-thanh-ha-nie-kdam-giu-chuc-bi-thu-tinh-uy-lam-dong-nhiem-ky-2025-2030-119251010121356001.htm\",\"date\":\"2025-10-10\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:28:15.815Z\",\"queries\":[\"Y Thanh Hà Niê Kđăm\",\"Bí thư Tỉnh ủy Lâm Đồng\"]}"
  },
  {
   "province": "68",
@@ -777,7 +828,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/L%C3%A2m_%C4%90%E1%BB%93ng\",\"value\":\"Hồ Văn Mười\"},\"portal\":{\"url\":\"http://www.lamdong.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Hồ Văn Mười\",\"checked_at\":\"2026-10-25T10:28:21.817Z\",\"queries\":[\"Hồ Văn Mười\",\"Chủ tịch UBND tỉnh Lâm Đồng\"]}"
  },
  {
   "province": "75",
@@ -792,7 +844,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/%C4%90%E1%BB%93ng_Nai\",\"value\":\"Vũ Hồng Văn\"},\"portal\":{\"url\":\"http://www.dongnai.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Vũ Hồng Văn\",\"title\":\"Tiểu sử đồng chí Vũ Hồng Văn, Bí thư Tỉnh ủy Đồng Nai\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-vu-hong-van-bi-thu-tinh-uy-dong-nai-119250930122534293.htm\",\"date\":\"2025-09-30\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:28:27.819Z\",\"queries\":[\"Vũ Hồng Văn\",\"Bí thư Thành ủy Đồng Nai\"]}"
  },
  {
   "province": "75",
@@ -807,7 +860,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/%C4%90%E1%BB%93ng_Nai\",\"value\":\"Nguyễn Văn Út\"},\"portal\":{\"url\":\"http://www.dongnai.gov.vn/\",\"found\":true}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Nguyễn Văn Út\",\"title\":\"Tân Phó Bí thư Tỉnh ủy Đồng Nai Nguyễn Văn Út được bầu giữ chức Chủ tịch UBND tỉnh\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tan-pho-bi-thu-tinh-uy-dong-nai-nguyen-van-ut-duoc-bau-giu-chuc-chu-tich-ubnd-tinh-119251118180516119.htm\",\"date\":\"2025-11-18\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:28:33.825Z\",\"queries\":[\"Nguyễn Văn Út\",\"Chủ tịch UBND thành phố Đồng Nai\"]}"
  },
  {
   "province": "79",
@@ -822,7 +876,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Th%C3%A0nh_ph%E1%BB%91_H%E1%BB%93_Ch%C3%AD_Minh\",\"value\":\"Trần Lưu Quang\"},\"portal\":{\"url\":\"http://www.hochiminhcity.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Trần Lưu Quang\",\"title\":\"Đồng chí Trần Lưu Quang giữ chức Bí thư Thành ủy Thành phố Hồ Chí Minh\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/dong-chi-tran-luu-quang-giu-chuc-bi-thu-thanh-uy-thanh-pho-ho-chi-minh-119250825093852415.htm\",\"date\":\"2025-08-25\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:28:39.831Z\",\"queries\":[\"Trần Lưu Quang\",\"Bí thư Thành ủy Hồ Chí Minh\"]}"
  },
  {
   "province": "79",
@@ -837,7 +892,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/Th%C3%A0nh_ph%E1%BB%91_H%E1%BB%93_Ch%C3%AD_Minh\",\"value\":\"Nguyễn Văn Được\"},\"wikidata\":{\"url\":\"https://www.wikidata.org/wiki/Q1854\",\"value\":\"Nguyễn Văn Được\"},\"portal\":{\"url\":\"http://www.hochiminhcity.gov.vn/\",\"found\":true}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Nguyễn Văn Được\",\"checked_at\":\"2026-10-25T10:28:45.826Z\",\"queries\":[\"Nguyễn Văn Được\",\"Chủ tịch UBND thành phố Hồ Chí Minh\"]}"
  },
  {
   "province": "80",
@@ -852,7 +908,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/T%C3%A2y_Ninh\",\"value\":\"Nguyễn Văn Quyết\"},\"portal\":{\"url\":\"http://www.tayninh.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Nguyễn Văn Quyết\",\"checked_at\":\"2026-10-25T10:28:51.832Z\",\"queries\":[\"Nguyễn Văn Quyết\",\"Bí thư Tỉnh ủy Tây Ninh\"]}"
  },
  {
   "province": "80",
@@ -867,7 +924,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/T%C3%A2y_Ninh\",\"value\":\"Lê Văn Hẳn\"},\"portal\":{\"url\":\"http://www.tayninh.gov.vn\",\"found\":true}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Lê Văn Hẳn\",\"checked_at\":\"2026-10-25T10:28:57.835Z\",\"queries\":[\"Lê Văn Hẳn\",\"Chủ tịch UBND tỉnh Tây Ninh\"]}"
  },
  {
   "province": "82",
@@ -882,7 +940,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "verified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/%C4%90%E1%BB%93ng_Th%C3%A1p\",\"value\":\"Ngô Chí Cường\"},\"portal\":{\"url\":\"http://www.dongthap.gov.vn\",\"found\":true}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Ngô Chí Cường\",\"title\":\"Tiểu sử đồng chí Ngô Chí Cường, Bí thư Tỉnh ủy Đồng Tháp\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-ngo-chi-cuong-bi-thu-tinh-uy-dong-thap-11925100116104657.htm\",\"date\":\"2025-10-03\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:29:03.837Z\",\"queries\":[\"Ngô Chí Cường\",\"Bí thư Tỉnh ủy Đồng Tháp\"]}"
  },
  {
   "province": "82",
@@ -897,7 +956,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/%C4%90%E1%BB%93ng_Th%C3%A1p\",\"value\":\"Nguyễn Thanh Nhàn\"},\"portal\":{\"url\":\"http://www.dongthap.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Nguyễn Thanh Nhàn\",\"title\":\"Ông Nguyễn Thanh Nhàn được bầu giữ chức Chủ tịch UBND tỉnh Đồng Tháp\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/ong-nguyen-thanh-nhan-duoc-bau-giu-chuc-chu-tich-ubnd-tinh-dong-thap-11926090916440307.htm\",\"date\":\"2026-09-09\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:29:09.838Z\",\"queries\":[\"Nguyễn Thanh Nhàn\",\"Chủ tịch UBND tỉnh Đồng Tháp\"]}"
  },
  {
   "province": "86",
@@ -912,7 +972,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/V%C4%A9nh_Long\",\"value\":\"Trần Văn Lâu\"},\"portal\":{\"url\":\"http://www.vinhlong.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Trần Văn Lâu\",\"title\":\"Tiểu sử đồng chí Trần Văn Lâu, Bí thư Tỉnh ủy Vĩnh Long\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-tran-van-lau-bi-thu-tinh-uy-vinh-long-119251003132744177.htm\",\"date\":\"2025-10-05\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:29:15.843Z\",\"queries\":[\"Trần Văn Lâu\",\"Bí thư Tỉnh ủy Vĩnh Long\"]}"
  },
  {
   "province": "86",
@@ -927,7 +988,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/V%C4%A9nh_Long\",\"value\":\"Trần Trí Quang\"},\"portal\":{\"url\":\"http://www.vinhlong.gov.vn\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Trần Trí Quang\",\"title\":\"Đồng chí Trần Trí Quang được bầu giữ chức Chủ tịch UBND tỉnh Vĩnh Long\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/dong-chi-tran-tri-quang-duoc-bau-giu-chuc-chu-tich-ubnd-tinh-vinh-long-119251118144603877.htm\",\"date\":\"2025-11-18\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:29:21.844Z\",\"queries\":[\"Trần Trí Quang\",\"Chủ tịch UBND tỉnh Vĩnh Long\"]}"
  },
  {
   "province": "91",
@@ -942,7 +1004,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/An_Giang\",\"value\":\"Lê Quang Tùng\"},\"portal\":{\"url\":\"http://www.angiang.gov.vn/\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Lê Quang Tùng\",\"title\":\"Tiểu sử đồng chí Lê Quang Tùng, tân Bí thư Tỉnh ủy An Giang\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-le-quang-tung-tan-bi-thu-tinh-uy-an-giang-119260725110249259.htm\",\"date\":\"2026-07-27\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:29:27.859Z\",\"queries\":[\"Lê Quang Tùng\",\"Bí thư Tỉnh ủy An Giang\"]}"
  },
  {
   "province": "91",
@@ -957,7 +1020,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/An_Giang\",\"value\":\"Hồ Văn Mừng\"},\"portal\":{\"url\":\"http://www.angiang.gov.vn/\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Hồ Văn Mừng\",\"checked_at\":\"2026-10-25T10:29:33.852Z\",\"queries\":[\"Hồ Văn Mừng\",\"Chủ tịch UBND tỉnh An Giang\"]}"
  },
  {
   "province": "92",
@@ -972,7 +1036,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/C%E1%BA%A7n_Th%C6%A1\",\"value\":\"Đỗ Thanh Bình\"},\"portal\":{\"url\":\"https://cantho.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Đỗ Thanh Bình\",\"title\":\"Tiểu sử đồng chí Đỗ Thanh Bình, tân Bí thư Thành ủy Cần Thơ\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-dong-chi-do-thanh-binh-tan-bi-thu-thanh-uy-can-tho-119260725165657706.htm\",\"date\":\"2026-07-27\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:29:39.862Z\",\"queries\":[\"Đỗ Thanh Bình\",\"Bí thư Thành ủy Cần Thơ\"]}"
  },
  {
   "province": "92",
@@ -987,7 +1052,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/C%E1%BA%A7n_Th%C6%A1\",\"value\":\"Trương Cảnh Tuyên\"},\"portal\":{\"url\":\"https://cantho.gov.vn/\",\"found\":false}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Trương Cảnh Tuyên\",\"title\":\"Tiểu sử ông Trương Cảnh Tuyên, Chủ tịch UBND TP Cần Thơ\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/tieu-su-ong-truong-canh-tuyen-chu-tich-ubnd-tp-can-tho-11925100316294016.htm\",\"date\":\"2025-10-05\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:29:45.865Z\",\"queries\":[\"Trương Cảnh Tuyên\",\"Chủ tịch UBND thành phố Cần Thơ\"]}"
  },
  {
   "province": "96",
@@ -1002,7 +1068,8 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/C%C3%A0_Mau\",\"value\":\"Nguyễn Hồ Hải\"},\"portal\":{\"url\":\"http://www.camau.gov.vn/\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"not_found\",\"name\":\"Nguyễn Hồ Hải\",\"checked_at\":\"2026-10-25T10:29:51.864Z\",\"queries\":[\"Nguyễn Hồ Hải\",\"Bí thư Tỉnh ủy Cà Mau\"]}"
  },
  {
   "province": "96",
@@ -1017,6 +1084,7 @@
   "cand_fetched_at": "2026-10-25T03:50:53.741Z",
   "cand_status": "unverified",
   "evidence": "{\"wikipedia\":{\"url\":\"https://vi.wikipedia.org/wiki/C%C3%A0_Mau\",\"value\":\"Lữ Quang Ngời\"},\"portal\":{\"url\":\"http://www.camau.gov.vn/\",\"found\":null}}",
-  "flag": null
+  "flag": null,
+  "news": "{\"status\":\"verified\",\"name\":\"Lữ Quang Ngời\",\"title\":\"Đồng chí Lữ Quang Ngời được bầu giữ chức Chủ tịch UBND tỉnh Cà Mau\",\"url\":\"https://xaydungchinhsach.chinhphu.vn/dong-chi-lu-quang-ngoi-duoc-bau-giu-chuc-chu-tich-ubnd-tinh-ca-mau-119251118151929693.htm\",\"date\":\"2025-11-18\",\"site\":\"Xây dựng Chính sách, Pháp luật\",\"checked_at\":\"2026-10-25T10:29:57.874Z\",\"queries\":[\"Lữ Quang Ngời\",\"Chủ tịch UBND tỉnh Cà Mau\"]}"
  }
 ]

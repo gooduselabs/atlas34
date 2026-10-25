@@ -14,7 +14,6 @@
 @font-face{font-family:Lora;font-style:normal;font-weight:600;font-display:swap;src:url(fonts/lora-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2190-2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{color-scheme:light;--paper:#EFE8DA;--paper2:#F7F2E7;--ink:#1B1A17;--ink2:#3A372F;--mute:#6B655A;--rule:#1B1A1733;--rule2:#1B1A1714;--red:#BC301B;--jade:#1F5C4A;--sea:#DCE3DE;--ochre:#D9A441;--dot:#1B1A170D;--grid:#1B1A1712;--shadow:#1B1A1726;--tipmute:#BDB6A6;--redbg:#C8341E0A;--jadebg:#1F5C4A0D;--amber:#8A6A1F;--focus:#C8341E;
 --serif:Lora,"Noto Serif",Georgia,serif;--disp:BVP,system-ui,sans-serif;--sans:BVP,system-ui,-apple-system,"Segoe UI",sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--paper:#17160F;--paper2:#201E17;--ink:#EDE6D6;--ink2:#CFC7B5;--mute:#A39C8B;--rule:#EDE6D640;--rule2:#EDE6D61A;--red:#F0613F;--jade:#6FBFA0;--sea:#1C2A2B;--ochre:#C99A3C;--dot:#EDE6D60A;--grid:#EDE6D60E;--shadow:#00000066;--tipmute:#8A8373;--redbg:#F0613F14;--jadebg:#6FBFA014;--amber:#D7B35A;--focus:#F0613F}}
 :root[data-theme=dark]{color-scheme:dark;--paper:#17160F;--paper2:#201E17;--ink:#EDE6D6;--ink2:#CFC7B5;--mute:#A39C8B;--rule:#EDE6D640;--rule2:#EDE6D61A;--red:#F0613F;--jade:#6FBFA0;--sea:#1C2A2B;--ochre:#C99A3C;--dot:#EDE6D60A;--grid:#EDE6D60E;--shadow:#00000066;--tipmute:#8A8373;--redbg:#F0613F14;--jadebg:#6FBFA014;--amber:#D7B35A;--focus:#F0613F}
 *{box-sizing:border-box;margin:0}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
@@ -267,9 +266,7 @@ button{font-family:var(--sans)}
 @keyframes lblin{from{opacity:0}to{opacity:1}}.maplibregl-marker.lbl{animation:lblin .35s ease-out both}
 @media (max-width:859px){.map-ph{display:block;position:absolute;inset:0;z-index:1;pointer-events:none;background:var(--sea) var(--map-ph) center top/cover no-repeat;transition:opacity .25s}.map-wrap.live .map-ph{opacity:0;visibility:hidden}}
 :root{--map-ph:url(img/map-ph-light.webp)}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--map-ph:url(img/map-ph-dark.webp)}}
 :root[data-theme=dark]{--map-ph:url(img/map-ph-dark.webp)}
 @media (min-width:860px){.map-ph{display:block;position:absolute;inset:0;z-index:1;pointer-events:none;background:var(--sea) var(--map-ph-d) center/cover no-repeat;transition:opacity .25s}.map-wrap.live .map-ph{opacity:0;visibility:hidden}}
 :root{--map-ph-d:url(img/map-ph-d-light.webp)}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--map-ph-d:url(img/map-ph-d-dark.webp)}}
 :root[data-theme=dark]{--map-ph-d:url(img/map-ph-d-dark.webp)}
