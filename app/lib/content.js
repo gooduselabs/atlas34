@@ -29,5 +29,8 @@ export function syncNewsFromContent() {
     const a = JSON.parse(r.news).checked_at || '', b = cur.news ? JSON.parse(cur.news).checked_at || '' : '';
     if (a <= b) continue; const st = JSON.parse(r.news).status; n++;
     if (st === 'updated') upd.run({ ...r, flag: r.flag }); else nnews.run({ province: r.province, role: r.role, news: r.news, flag: st === 'conflict' ? r.flag : null }); } })();
+  // approvals committed to content/ (e.g. approved via git) are applied to rows that are not yet approved in this DB
+  const ap = db.prepare("UPDATE leaders SET name=@name, source_url=@source_url, verified_at=@verified_at, status='approved', flag=NULL WHERE province=@province AND role=@role AND (status IS NULL OR status!='approved' OR name!=@name)");
+  db.transaction(() => { for (const r of L) if (r.status === 'approved' && r.name) n += ap.run(r).changes; })();
   return n;
 }
