@@ -64,4 +64,4 @@ const chk = (mode, [s, exp, street, fn]) => test(`${mode}: ${s}`, async () => { 
   const top = mode === 'old' ? `${r[0].w}|${r[0].d}` : `${r[0].n}|${r[0].pn}`; assert.equal(top, exp);
   if (street !== undefined) assert.equal(r[0].street, street); });
 OLD.forEach(c => chk('old', c)); NEW.forEach(c => chk('new', c));
-test('speed: 200 parses < 4 s', async () => { const t = Date.now(); for (let i = 0; i < 200; i++) await q('60 duong so 1 tan thnah tan phu hcm ' + i); assert.ok(Date.now() - t < 4000); });
+test('speed: 200 parses < 4 s (local only)', { skip: !/localhost|127\.0/.test(B) }, async () => { const t = Date.now(); for (let i = 0; i < 200; i++) await q('60 duong so 1 tan thnah tan phu hcm ' + i); assert.ok(Date.now() - t < 4000); });
