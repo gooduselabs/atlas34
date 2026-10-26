@@ -1,6 +1,6 @@
 import express from 'express'; import compression from 'compression'; import cookieParser from 'cookie-parser';
 import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto'; import cron from 'node-cron';
-import { db } from './lib/db.js'; import { refreshAll } from './lib/leaders.js'; import { ogPng } from './lib/og.js'; import { resolveStreet, locate, legalFor } from './lib/resolve.js'; import { seedFromContent, syncNewsFromContent } from './lib/content.js';
+import { db } from './lib/db.js'; import { refreshAll } from './lib/leaders.js'; import { ogPng } from './lib/og.js'; import { resolveStreet, locate, legalFor } from './lib/resolve.js'; import './public/addr-parse.js'; import { seedFromContent, syncNewsFromContent } from './lib/content.js';
 if (seedFromContent()) console.log('seeded leaders/facts from content/'); else { const n = syncNewsFromContent(); if (n) console.log('news sources synced from content/:', n); }
 const PUB = path.resolve('public'); const PORT = +process.env.PORT || 3300;
 const BASE = (process.env.PUBLIC_URL || `http://localhost:${PORT}`).replace(/\/$/, '');
@@ -54,14 +54,10 @@ app.use(express.static(PUB, { index: false, maxAge: '1h' }));
 app.get('/api/stats', (req, res) => res.json({ ...stats, leaders: db.prepare("SELECT COUNT(*) n, SUM(cand_status='verified' OR status='approved') v FROM leaders").get() }));
 app.get('/api/provinces', (req, res) => res.json(provinces));
 app.get('/api/province/:code', (req, res) => { const p = byCode[req.params.code] || bySlug[req.params.code]; if (!p) return res.status(404).json({ error: 'not found' }); res.json({ ...detail(p), wards: wardsOf(p.code) }); });
-app.get('/api/search', (req, res) => {
-  const q = String(req.query.q || '').slice(0, 100);
-  if (req.query.mode === 'new') return res.json(search(newW, q).map(({ k, ...r }) => r));
-  // free-form full address: "60 đường số 1, Phường Tân Thành, Quận Tân Phú, TP.HCM" -> street part + admin part
-  let items = search(legacy, q), street = null; const segs = q.split(',');
-  for (let i = 1; !items.length && i < segs.length; i++) { items = search(legacy, segs.slice(i).join(' ')); if (items.length) street = segs.slice(0, i).join(',').trim(); }
-  res.json(items.map(({ k, t, ...r }) => ({ ...r, n: t.length, street })));
-});
+const AP = globalThis.A34Parse.make({ legacy, newW, provinces });
+const findOld = q => AP.parseOld(q).map(({ item: { k, t, ...r }, street, score, partial }) => ({ ...r, n: t.length, street, score, partial }));
+const findNew = q => AP.parseNew(q).map(({ item: { k, ...r }, street, score }) => ({ ...r, street, score }));
+app.get('/api/search', (req, res) => { const q = String(req.query.q || '').slice(0, 200); res.json(req.query.mode === 'new' ? findNew(q) : findOld(q)); });
 const convOld = (id, street) => { const r = legById[id]; if (!r) return null;
   const to = r.t.map(([c, def]) => ({ code: c, name: newBy[c].n, province: newBy[c].pn, provinceCode: newBy[c].p, slug: byCode[newBy[c].p].slug, default: !!def, legal: r.t.length > 1 ? legalFor(newBy[c].p, newBy[c].n) : null })).sort((a, b) => b.default - a.default);
   const out = { from: { id: r.id, w: r.w, d: r.d, p: r.p }, split: r.t.length > 1, to };
@@ -91,8 +87,7 @@ function quotaFor(req) { const raw = req.get('x-api-key'); if (raw) { const k = 
   return { who: 'ip:' + req.ip, limit: FREE_LIMIT }; }
 function convertAddress(q) {
   q = String(q || '').trim().slice(0, 300); if (!q) return { old: q, new: '', status: 'bad', note: 'Dòng trống' };
-  let its = search(legacy, q), street = null; const segs = q.split(',');
-  for (let i = 1; !its.length && i < segs.length; i++) { its = search(legacy, segs.slice(i).join(' ')); if (its.length) street = segs.slice(0, i).join(',').trim(); }
+  const its = findOld(q); const street = its[0]?.street || null;
   const it = its[0]; if (!it) return { old: q, new: '', status: 'bad', note: 'Không nhận ra xã/phường cũ' };
   const r = convOld(it.id, street); const pre = street ? street + ', ' : ''; const R = r.resolve; const hit = R?.code && r.to.find(t => t.code === R.code);
   const same = its.filter(x => fold(x.w) === fold(it.w)); const dup = same.length > 1 ? 'có ' + same.length + ' xã cũ cùng tên (' + same.slice(0, 3).map(x => x.d).join(', ') + '), đã lấy xã khớp nhất' : '';

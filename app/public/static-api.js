@@ -42,11 +42,10 @@ const inGeom = (x, y, g) => (g.type === 'Polygon' ? [g.coordinates] : g.coordina
 const routes = [
   [/^\/api\/province\/([^/?]+)/, async (C, m) => { const p = C.byCode[m[1]] || C.provinces.find(x => x.slug === m[1]); if (!p) throw new Error(404);
     return { ...p, leaders: C.leaders[p.code] || [], facts: C.facts[p.code] || [], wards: await get(`/data/wards/${p.code}.json`) }; }],
-  [/^\/api\/search/, async (C, m, q) => { const s = String(q.get('q') || '').slice(0, 100);
-    if (q.get('mode') === 'new') return search(C.newW, s).map(({ k, ...r }) => r);
-    let items = search(C.legacy, s), street = null; const segs = s.split(',');
-    for (let i = 1; !items.length && i < segs.length; i++) { items = search(C.legacy, segs.slice(i).join(' ')); if (items.length) street = segs.slice(0, i).join(',').trim(); }
-    return items.map(({ k, t, ...r }) => ({ ...r, n: t.length, street })); }],
+  [/^\/api\/search/, async (C, m, q) => { const s = String(q.get('q') || '').slice(0, 200);
+    if (!globalThis.A34Parse) await import(B + '/addr-parse.js'); const AP = C.AP ||= globalThis.A34Parse.make({ legacy: C.legacy, newW: C.newW, provinces: C.provinces });
+    if (q.get('mode') === 'new') return AP.parseNew(s).map(({ item: { k, ...r }, street, score }) => ({ ...r, street, score }));
+    return AP.parseOld(s).map(({ item: { k, t, ...r }, street, score, partial }) => ({ ...r, n: t.length, street, score, partial })); }],
   [/^\/api\/convert/, async (C, m, q) => {
     if (q.get('old')) { const r = C.legById[q.get('old')]; if (!r) throw new Error(404); const nb = C.newBy, sp = r.t.length > 1;
       const to = r.t.map(([c, def]) => ({ code: c, name: nb[c].n, province: nb[c].pn, provinceCode: nb[c].p, slug: C.byCode[nb[c].p].slug, default: !!def, legal: sp ? legalFor(C, nb[c].p, nb[c].n) : null })).sort((a, b) => b.default - a.default);

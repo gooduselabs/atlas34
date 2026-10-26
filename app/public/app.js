@@ -323,7 +323,7 @@ function showConvert() {
     else if (e.key === 'Enter') { e.preventDefault(); if (!ul.hidden && ai >= 0) pick(items[ai], true); else { close(); convertText(); } } else if (e.key === 'Escape') close(); };
   ul.onmousedown = e => { const li = e.target.closest('li[data-i]'); if (li) { e.preventDefault(); const it = items[+li.dataset.i]; const s = it.street; pick(it, !!s); } };
   inp.onblur = () => setTimeout(close, 150); let tst;
-  inp.onpaste = () => setTimeout(() => { if (inp.value.includes(',')) { close(); convertText(); } }, 30);
+  inp.onpaste = () => setTimeout(() => { if (inp.value.trim().split(/\s+/).length >= 3) { close(); convertText(); } }, 30);
   // cascading pickers with type-to-filter (diacritics-insensitive)
   function pickers() { const box = $('#pks'); sel = null;
     const defs = m === 'old' ? [['Tỉnh/TP cũ', 'p'], ['Quận/Huyện cũ', 'd'], ['Phường/Xã cũ', 'w']] : [['Tỉnh/TP mới', 'p'], ['Phường/Xã/Đặc khu mới', 'w']];
