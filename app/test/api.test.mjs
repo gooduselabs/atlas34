@@ -67,3 +67,10 @@ test('leader news source link (Báo Chính phủ / Xây dựng Chính sách, Ph�
   assert.ok(l.news.title.includes(l.name), 'article title names the displayed leader'); assert.match(l.news.date, /^\d{4}-\d{2}-\d{2}$/);
   const js = await (await fetch(B + '/app.js')).text(); assert.match(js, /class="newsl" href="\$\{esc\(nw\.url\)\}" target="_blank" rel="noopener"/); assert.match(js, /Xây dựng Chính sách, Pháp luật/);
 });
+// ---- v3: cascading old-unit picker ----
+test('old-units cascade: provinces -> districts -> wards', async () => {
+  const P = (await j('/api/old-units')).d; assert.equal(P.length, 63); assert.ok(P.includes('Tỉnh Quảng Nam'));
+  const D = (await j('/api/old-units?p=' + encodeURIComponent('Thành phố Hà Nội'))).d; assert.ok(D.includes('Huyện Gia Lâm'));
+  const W = (await j(`/api/old-units?p=${encodeURIComponent('Thành phố Hà Nội')}&d=${encodeURIComponent('Huyện Gia Lâm')}`)).d;
+  const bt = W.find(w => w.w === 'Xã Bát Tràng'); assert.equal(bt.id, '00583'); assert.equal(bt.n, 3); });
+test('converter page ships new UI hooks', async () => { const js = (await j('/app.js')).d; for (const k of ['id="fa"', 'id="go"', 'old-units', 'cv-hero']) assert.ok(js.includes(k), k); });

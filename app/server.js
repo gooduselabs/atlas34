@@ -68,6 +68,11 @@ const convOld = (id, street) => { const r = legById[id]; if (!r) return null;
   if (out.split && street) out.resolve = resolveStreet(r.id, String(street).slice(0, 120), to.map(t => t.code));
   return out; };
 const convNew = c => { const w = newBy[c]; if (!w) return null; return { to: { code: c, name: w.n, province: w.pn, provinceCode: w.p, slug: byCode[w.p].slug }, from: rev[c] || [] }; };
+// cascading old-unit picker: no params -> old provinces; ?p= -> districts; ?p=&d= -> wards
+const vi = (a, b) => a.localeCompare(b, 'vi'); const uniq = a => [...new Set(a)].sort(vi);
+const oldUnits = (p, d) => !p ? uniq(legacy.map(r => r.p)) : !d ? uniq(legacy.filter(r => r.p === p).map(r => r.d))
+  : legacy.filter(r => r.p === p && r.d === d).map(r => ({ id: r.id, w: r.w, n: r.t.length })).sort((x, y) => vi(x.w, y.w));
+app.get('/api/old-units', (req, res) => res.set('Cache-Control', 'public, max-age=86400').json(oldUnits(req.query.p && String(req.query.p), req.query.d && String(req.query.d))));
 app.get('/api/convert', (req, res) => { const r = req.query.old ? convOld(String(req.query.old), req.query.street) : convNew(String(req.query.new || '')); r ? res.json(r) : res.status(404).json({ error: 'not found' }); });
 
 app.get('/api/locate', (req, res) => {

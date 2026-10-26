@@ -279,30 +279,72 @@ async function showWard(code, fly) {
 function showConvert() {
   setTab('convert'); setTitle('Đổi địa chỉ cũ ↔ mới');
   const qs = new URLSearchParams(location.search); const mode = qs.has('moi') ? 'new' : 'old';
-  folio.innerHTML = `<div class="sec"><div class="kicker"><span>Công cụ</span><span>${fmt(S.stats.legacyWards)} xã cũ · ${fmt(S.stats.wards)} xã mới</span></div>
-    <h1 class="h-l">Đổi địa chỉ</h1><p class="lede" style="font-size:16px">Gõ tên xã/phường cũ (kèm huyện, tỉnh để chính xác hơn). Nếu xã cũ bị chia cho nhiều xã mới, mọi phương án đều hiện ra.</p>
+  let how = (() => { try { return localStorage.getItem('a34-cv-how') || 'text'; } catch { return 'text'; } })();
+  folio.innerHTML = `<div class="sec cv"><div class="kicker"><span>Công cụ</span><span>${fmt(S.stats.legacyWards)} xã cũ · ${fmt(S.stats.wards)} xã mới</span></div>
+    <h1 class="h-l">Đổi địa chỉ</h1><p class="lede" style="font-size:16px">Dán nguyên địa chỉ cũ hoặc chọn từng cấp. Số nhà, tên đường được giữ nguyên; xã cũ bị chia tách sẽ hiện đủ mọi phương án.</p>
     <div class="seg" id="seg"><button data-m="old" aria-pressed="${mode === 'old'}">Cũ → Mới</button><button data-m="new" aria-pressed="${mode === 'new'}">Mới → Cũ</button></div>
-    <div class="ac"><div class="search"><input id="cq" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="cl" autocomplete="off"></div><ul id="cl" role="listbox" hidden></ul></div>
-    <div class="search street"><input id="st" placeholder="Số nhà, đường, thôn/xóm (tuỳ chọn, giữ nguyên)" autocomplete="off"></div>
-    <div class="result" id="res"></div>${recentHTML()}</div>
-  <div class="sec"><div class="h-s">Lưu ý</div><p class="meta" style="font-size:13px">Bảng đổi địa chỉ lấy từ thư viện mở vietnamadminunits, dựng theo các nghị quyết của UBTVQH về sắp xếp đơn vị hành chính cấp xã năm 2025. Với xã bị chia tách, địa chỉ mới phụ thuộc vào vị trí thật của nhà bạn (thôn/ấp). Hãy đối chiếu với nghị quyết của tỉnh hoặc hỏi UBND xã. Ô “mặc định” là phương án thư viện đề xuất, thường là nơi có phần diện tích lớn nhất hoặc trụ sở.</p></div>${foot()}`;
-  let m = mode; const inp = $('#cq'), ul = $('#cl'); let items = [], ai = -1, tm;
-  const ph = () => inp.placeholder = m === 'old' ? 'VD: Điện Bàn, Quảng Nam' : 'VD: Phường Hội An, Đà Nẵng';
-  ph(); $('#seg').onclick = e => { const b = e.target.closest('button'); if (!b) return; m = b.dataset.m; $$('#seg button').forEach(x => x.setAttribute('aria-pressed', x === b)); ph(); inp.value = ''; ul.hidden = true; $('#res').innerHTML = ''; inp.focus(); };
+    <div class="cv-how" role="tablist" id="how"><button role="tab" data-h="text">Gõ địa chỉ</button><button role="tab" data-h="pick">Chọn từng cấp</button></div>
+    <div class="cv-panel" id="p-text"><label class="cv-lb" for="fa" id="fa-lb"></label>
+      <div class="cv-ta ac"><textarea id="fa" rows="2" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="cl"></textarea><button class="cv-x" id="fx" aria-label="Xoá" hidden>×</button><ul id="cl" role="listbox" hidden></ul></div>
+      <div class="cv-ex" id="ex"></div></div>
+    <div class="cv-panel" id="p-pick"><div class="cv-grid" id="pks"></div></div>
+    <div class="cv-st"><label class="cv-lb" for="st">Số nhà, tên đường, thôn/xóm <i>(tuỳ chọn, giữ nguyên trong địa chỉ mới)</i></label><div class="search street"><input id="st" placeholder="VD: 60 đường số 1" autocomplete="off"></div></div>
+    <button class="cv-go" id="go">Chuyển đổi <span aria-hidden="true">→</span></button>
+    <div id="alt"></div><div class="result" id="res" aria-live="polite"></div>${recentHTML()}</div>
+  <div class="sec"><div class="h-s">Lưu ý</div><p class="meta" style="font-size:13px">Bảng đổi địa chỉ lấy từ thư viện mở vietnamadminunits, dựng theo các nghị quyết của UBTVQH về sắp xếp đơn vị hành chính cấp xã năm 2025. Với xã bị chia tách, địa chỉ mới phụ thuộc vào vị trí thật của nhà bạn (thôn/ấp, số nhà). Hãy đối chiếu với nghị quyết của tỉnh hoặc hỏi UBND xã. Ô “mặc định” là phương án thư viện đề xuất, thường là nơi có phần diện tích lớn nhất hoặc trụ sở.</p></div>${foot()}`;
+  let m = mode; const inp = $('#fa'), ul = $('#cl'); let items = [], ai = -1, tm, sel = null;
+  const EX = { old: ['60 đường số 1, Phường Tân Thành, Quận Tân Phú, TP.HCM', 'Xã Bát Tràng, Gia Lâm, Hà Nội', '12 Trần Phú, P. Minh An, Hội An, Quảng Nam'], new: ['Phường Hội An, Đà Nẵng', 'Phường Phú Thọ Hòa, Hồ Chí Minh', 'Xã Bát Tràng, Hà Nội'] };
+  const setMode = () => { $('#fa-lb').textContent = m === 'old' ? 'Địa chỉ cũ (trước 1/7/2025)' : 'Địa chỉ mới (từ 1/7/2025)';
+    inp.placeholder = m === 'old' ? 'Số nhà, đường, Phường/Xã, Quận/Huyện, Tỉnh/TP' : 'Phường/Xã mới, Tỉnh/TP';
+    $('#ex').innerHTML = '<span>Thử:</span>' + EX[m].map(x => `<button type="button">${esc(x)}</button>`).join(''); $('#fx').hidden = !inp.value; pickers(); };
+  const setHow = h => { how = h; try { localStorage.setItem('a34-cv-how', h); } catch {} $$('#how button').forEach(b => b.setAttribute('aria-selected', b.dataset.h === h)); $('#p-text').hidden = h !== 'text'; $('#p-pick').hidden = h !== 'pick'; };
+  $('#how').onclick = e => { const b = e.target.closest('button'); if (b) setHow(b.dataset.h); };
+  $('#seg').onclick = e => { const b = e.target.closest('button'); if (!b || b.dataset.m === m) return; m = b.dataset.m; $$('#seg button').forEach(x => x.setAttribute('aria-pressed', x === b)); inp.value = ''; sel = null; close(); $('#res').innerHTML = $('#alt').innerHTML = ''; S.lastRes = null; setMode(); };
+  $('#ex').onclick = e => { const b = e.target.closest('button'); if (!b) return; setHow('text'); inp.value = b.textContent; $('#st').value = ''; sel = null; convertText(); };
   const close = () => { ul.hidden = true; inp.setAttribute('aria-expanded', 'false'); };
-  const pick = it => { close(); if (it.street) $('#st').value = it.street; inp.value = m === 'old' ? `${it.w}, ${it.d}, ${it.p}` : `${it.n}, ${it.pn}`; load(m, m === 'old' ? it.id : it.c, true); };
-  inp.oninput = () => { clearTimeout(tm); const q = inp.value.trim(); if (q.length < 2) return close();
-    tm = setTimeout(async () => { items = await api(`/api/search?mode=${m}&q=${encodeURIComponent(q)}`); ai = -1;
+  const label = it => m === 'old' ? `${it.w}, ${it.d}, ${it.p}` : `${it.n}, ${it.pn}`;
+  const pick = (it, keepText) => { close(); sel = it; $('#alt').innerHTML = ''; if (it.street) $('#st').value = it.street; if (!keepText) inp.value = label(it); $('#fx').hidden = false; load(m, m === 'old' ? it.id : it.c, true); };
+  const find = q => api(`/api/search?mode=${m}&q=${encodeURIComponent(q)}`);
+  // free text: parse "street, ward, district, province" -> best legacy ward, keep the street part, offer the runner-ups
+  async function convertText() { const q = inp.value.trim(); if (!q) { inp.focus(); return toast('Nhập địa chỉ cần đổi.', true); }
+    let its; try { its = await find(q); } catch { return toast('Không tải được dữ liệu.', true); }
+    if (!its.length) { $('#res').innerHTML = `<div class="warnbox">Không nhận ra ${m === 'old' ? 'xã/phường cũ' : 'xã/phường mới'} trong địa chỉ này. Ghi rõ tên xã/phường và tỉnh, hoặc chuyển sang <b>Chọn từng cấp</b>.</div>`; $('#alt').innerHTML = ''; return; }
+    const it = its[0]; pick(it, true);
+    const rest = its.slice(1, 5); if (rest.length) { $('#alt').innerHTML = `<div class="cv-alt"><span>Không đúng nơi? Có thể là:</span>${rest.map((x, i) => `<button data-i="${i + 1}">${esc(m === 'old' ? x.w : x.n)}<small>${esc(m === 'old' ? x.d + ', ' + short(x.p) : short(x.pn))}</small></button>`).join('')}</div>`;
+      $('#alt').onclick = e => { const b = e.target.closest('button[data-i]'); if (b) { const x = its[+b.dataset.i]; x.street = it.street; pick(x, true); } }; } }
+  $('#go').onclick = () => how === 'text' ? convertText() : sel ? load(m, m === 'old' ? sel.id : sel.c, true) : toast(m === 'old' ? 'Chọn đủ tỉnh, huyện, xã cũ.' : 'Chọn tỉnh và xã/phường mới.', true);
+  $('#fx').onclick = () => { inp.value = ''; $('#fx').hidden = true; close(); inp.focus(); };
+  inp.oninput = () => { $('#fx').hidden = !inp.value; clearTimeout(tm); const q = inp.value.trim(); if (q.length < 2) return close();
+    tm = setTimeout(async () => { items = await find(q); ai = -1;
       ul.innerHTML = items.length ? items.map((it, i) => `<li role="option" data-i="${i}">${m === 'old' ? `${it.n > 1 ? `<span class="sp">chia ${it.n}</span>` : ''}${esc(it.w)}<small>${esc(it.d)}, ${esc(it.p)}</small>` : `${esc(it.n)}<small>${esc(it.pn)}</small>`}</li>`).join('') : '<li aria-disabled="true">Không tìm thấy. Thử bỏ dấu hoặc gõ ngắn hơn.</li>';
       ul.hidden = false; inp.setAttribute('aria-expanded', 'true'); }, 120); };
-  inp.onkeydown = e => { if (ul.hidden) return; const lis = $$('li[data-i]', ul);
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); ai = (ai + (e.key === 'ArrowDown' ? 1 : -1) + lis.length) % lis.length; lis.forEach((l, i) => l.setAttribute('aria-selected', i === ai)); lis[ai]?.scrollIntoView({ block: 'nearest' }); }
-    else if (e.key === 'Enter') { e.preventDefault(); pick(items[ai < 0 ? 0 : ai]); } else if (e.key === 'Escape') close(); };
-  ul.onmousedown = e => { const li = e.target.closest('li[data-i]'); if (li) { e.preventDefault(); pick(items[+li.dataset.i]); } };
+  inp.onkeydown = e => { const lis = $$('li[data-i]', ul);
+    if (!ul.hidden && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { e.preventDefault(); ai = (ai + (e.key === 'ArrowDown' ? 1 : -1) + lis.length) % lis.length; lis.forEach((l, i) => l.setAttribute('aria-selected', i === ai)); lis[ai]?.scrollIntoView({ block: 'nearest' }); }
+    else if (e.key === 'Enter') { e.preventDefault(); if (!ul.hidden && ai >= 0) pick(items[ai], true); else { close(); convertText(); } } else if (e.key === 'Escape') close(); };
+  ul.onmousedown = e => { const li = e.target.closest('li[data-i]'); if (li) { e.preventDefault(); const it = items[+li.dataset.i]; const s = it.street; pick(it, !!s); } };
   inp.onblur = () => setTimeout(close, 150); let tst;
-  // paste a whole address ("12 Lê Lợi, P. Bến Nghé, Q.1, TP.HCM"): pick the best match straight away
-  inp.onpaste = () => setTimeout(async () => { const q = inp.value.trim(); if (m !== 'old' || !q.includes(',')) return; try { const it = (await api(`/api/search?mode=old&q=${encodeURIComponent(q)}`))[0]; if (it) pick(it); else toast('Không nhận ra xã/phường trong địa chỉ này. Thử gõ tên xã cũ.', true); } catch {} }, 30);
-  bindRecent();
+  inp.onpaste = () => setTimeout(() => { if (inp.value.includes(',')) { close(); convertText(); } }, 30);
+  // cascading pickers with type-to-filter (diacritics-insensitive)
+  function pickers() { const box = $('#pks'); sel = null;
+    const defs = m === 'old' ? [['Tỉnh/TP cũ', 'p'], ['Quận/Huyện cũ', 'd'], ['Phường/Xã cũ', 'w']] : [['Tỉnh/TP mới', 'p'], ['Phường/Xã/Đặc khu mới', 'w']];
+    box.innerHTML = defs.map(([l, k], i) => `<div class="pk" data-k="${k}"><span class="cv-lb">${i + 1}. ${l}</span><button type="button" class="pk-b" disabled><span>Chọn…</span></button><div class="pk-pop" hidden><input placeholder="Lọc nhanh, gõ không dấu cũng được" autocomplete="off"><ul role="listbox"></ul></div></div>`).join('');
+    const P = $$('.pk', box); const st = {};
+    const fill = (i, list, lab) => { const el = P[i], b = $('.pk-b', el); el._list = list; el._lab = lab; b.disabled = !list.length; b.firstChild.textContent = list.length ? 'Chọn…' : '—'; b.classList.remove('set');
+      for (let j = i + 1; j < P.length; j++) { $('.pk-b', P[j]).disabled = true; $('.pk-b', P[j]).firstChild.textContent = '—'; $('.pk-b', P[j]).classList.remove('set'); } };
+    const draw = (el, q) => { const f = fold(q); $('ul', el).innerHTML = el._list.map((x, i) => [x, i]).filter(([x]) => !f || fold(el._lab(x)).includes(f)).slice(0, 400).map(([x, i]) => `<li role="option" data-i="${i}">${esc(el._lab(x))}${x.n > 1 ? ' <span class="sp">chia ' + x.n + '</span>' : ''}</li>`).join('') || '<li aria-disabled="true">Không có</li>'; };
+    const shut = () => P.forEach(el => $('.pk-pop', el).hidden = true);
+    P.forEach((el, i) => { const pop = $('.pk-pop', el), fi = $('input', el);
+      $('.pk-b', el).onclick = () => { const o = pop.hidden; shut(); if (o) { pop.hidden = false; fi.value = ''; draw(el, ''); fi.focus(); } };
+      fi.oninput = () => draw(el, fi.value); fi.onkeydown = e => { if (e.key === 'Escape') shut(); if (e.key === 'Enter') { e.preventDefault(); $('li[data-i]', el)?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })); } };
+      $('ul', el).onmousedown = async e => { const li = e.target.closest('li[data-i]'); if (!li) return; e.preventDefault(); const x = el._list[+li.dataset.i]; shut();
+        const b = $('.pk-b', el); b.firstChild.textContent = el._lab(x); b.classList.add('set'); st[el.dataset.k] = x; sel = null;
+        try { if (m === 'old') { if (i === 0) fill(1, await api('/api/old-units?p=' + encodeURIComponent(x)), String); else if (i === 1) fill(2, await api(`/api/old-units?p=${encodeURIComponent(st.p)}&d=${encodeURIComponent(x)}`), y => y.w);
+            else { sel = { id: x.id, w: x.w, d: st.d, p: st.p }; inp.value = label(sel); load('old', x.id, true); } }
+          else if (i === 0) { const d = S.detail[x.code] || await api('/api/province/' + x.code); fill(1, d.wards, y => y.full); P[1]._pc = x; }
+          else { sel = { c: x.code, n: x.full, pn: P[1]._pc.full }; inp.value = label(sel); load('new', x.code, true); } } catch { toast('Không tải được danh sách.', true); } }; });
+    if (!window.__pkd) { window.__pkd = 1; document.addEventListener('mousedown', e => { if (!e.target.closest('.pk')) $$('.pk-pop').forEach(x => x.hidden = true); }); }
+    (m === 'old' ? api('/api/old-units') : Promise.resolve(S.provinces)).then(l => fill(0, l, m === 'old' ? String : x => x.full)).catch(() => {}); }
+  setMode(); setHow(how); bindRecent();
   $('#st').oninput = () => { if (!S.lastRes) return; render(S.lastRes); clearTimeout(tst); if (S.lastRes.mode === 'old' && S.lastRes.split) tst = setTimeout(() => load('old', S.lastRes.from.id, true), 450); };
   if (qs.get('dc')) $('#st').value = qs.get('dc');
   if (qs.has('cu')) load('old', qs.get('cu')); else if (qs.has('moi')) load('new', qs.get('moi'));
@@ -316,6 +358,7 @@ function showConvert() {
         map.setFilter('ward-sel', ['in', ['id'], ['literal', codes]]); const fs = g.features.filter(f => codes.includes(f.id)); const R = r.resolve; const pts = R?.geom ? R.geom.flat() : R?.point ? [R.point] : null;
         if (pts) { const xs = pts.map(q => q[0]), ys = pts.map(q => q[1]); map.fitBounds([[Math.min(...xs) - .006, Math.min(...ys) - .006], [Math.max(...xs) + .006, Math.max(...ys) + .006]], { padding: 40, maxZoom: 14.5, duration: 900 }); }
         else if (fs.length) map.fitBounds(bboxOf({ features: fs }), { padding: 70, maxZoom: 11.5, duration: 900 }); }
+      if (push) { if (innerWidth < 860) sheet('full'); setTimeout(() => $('#res')?.scrollIntoView({ block: 'start', behavior: 'smooth' }), 350); }
       addRecent(mm === 'old' ? `${r.from.w}, ${r.from.d}, ${short(r.from.p)}` : `${r.to.name}, ${short(r.to.province)}`, u);
     } catch (e) { $('#res').innerHTML = `<div class="warnbox">${/404/.test(e.message) ? 'Không tìm thấy mã này.' : 'Không tải được dữ liệu. Kiểm tra mạng rồi thử lại.'}</div>`; }
   }
@@ -331,13 +374,19 @@ function showConvert() {
       const tools = r.split ? `<div class="pickers"><button class="btn" id="pk">Chọn trên bản đồ</button><button class="btn ghost" id="gl">Dùng vị trí của tôi</button></div>` : '';
       let body;
       if (hit) body = `<div class="method"><b>${esc(R.label)}</b> · ${esc(R.note)}</div>${card(hit, 'hit')}<details class="others"><summary>Các đơn vị mới khác nhận một phần xã cũ (${r.to.length - 1})</summary>${r.to.filter(t => t !== hit).map(t => card(t)).join('')}</details>`;
-      else if (r.split) body = `<div class="warnbox"><b>Xã cũ được chia cho ${r.to.length} đơn vị mới.</b><br>${R ? esc(R.note) : 'Nhập số nhà và tên đường ở ô trên, hoặc chọn vị trí nhà trên bản đồ, để ra đúng một kết quả.'}</div>${r.to.map(t => card(t)).join('')}`;
+      else if (r.split) body = `${R ? `<div class="warnbox">${esc(R.note)}</div>` : ''}${r.to.map(t => card(t)).join('')}`;
       else body = r.to.map(t => card(t)).join('');
-      $('#res').innerHTML = `<div class="addr-old">${pre}${esc(r.from.w)}, ${esc(r.from.d)}, ${esc(r.from.p)}</div><div class="arrow">↓</div>${tools}${body}
+      const fin = hit || (!r.split ? r.to[0] : null), full = t => `${st ? st + ', ' : ''}${t.name}, ${t.province}`;
+      const hero = fin ? `<div class="cv-hero"><div class="k">Địa chỉ mới${hit ? ' · ' + esc(R.label) : ''}</div><div class="a">${esc(full(fin))}</div><button class="cv-copy" data-copy="${esc(full(fin))}">Sao chép địa chỉ</button></div>`
+        : `<div class="cv-hero split"><div class="k">Cần thêm thông tin</div><div class="a">Xã cũ được chia cho ${r.to.length} đơn vị mới</div><p>Địa chỉ mới tuỳ vào vị trí nhà bạn trong xã cũ. Nhập số nhà và tên đường, hoặc chọn vị trí trên bản đồ. Tất cả phương án ở bên dưới, mỗi phương án đều sao chép được.</p></div>`;
+      $('#res').innerHTML = `<div class="cv-from"><span class="k">Địa chỉ cũ</span>${pre}${esc(r.from.w)}, ${esc(r.from.d)}, ${esc(r.from.p)}</div>${hero}${tools}${body}
       <div class="acts" style="margin-top:14px;display:flex;gap:10px"><button class="btn" data-copy="${esc(share)}">Sao chép liên kết chia sẻ</button></div>`;
       if (r.split) { $('#pk').onclick = () => startPick(r); $('#gl').onclick = () => geoLoc(r); }
     } else {
-      $('#res').innerHTML = `<div class="cand def"><div class="nm">${esc(r.to.name)}</div><div class="pv">${pre}${esc(r.to.name)}, ${esc(r.to.province)}</div></div>
+      const nf = `${st ? st + ', ' : ''}${r.to.name}, ${r.to.province}`, of = o => `${st ? st + ', ' : ''}${o.w}, ${o.d}, ${o.p}`;
+      $('#res').innerHTML = `<div class="cv-from"><span class="k">Địa chỉ mới</span>${esc(nf)}</div><div class="cv-hero"><div class="k">${r.from.length > 1 ? 'Địa chỉ cũ (một trong ' + r.from.length + ' đơn vị cũ)' : 'Địa chỉ cũ'}</div>
+        ${r.from.slice(0, 3).map(o => `<div class="a sm">${esc(of(o))}${o.split ? ' <span class="stamp mid">một phần</span>' : ''}</div>`).join('')}${r.from.length > 3 ? `<p>… và ${r.from.length - 3} đơn vị khác bên dưới.</p>` : ''}
+        ${r.from.length === 1 ? `<button class="cv-copy" data-copy="${esc(of(r.from[0]))}">Sao chép địa chỉ cũ</button>` : '<p>Địa chỉ cũ chính xác là xã cũ nơi nhà bạn từng thuộc về.</p>'}</div>
       <div class="h-s" style="margin-top:18px">Hình thành từ ${r.from.length} đơn vị cũ</div>
       <ul class="olds">${r.from.map(o => `<li><span>${esc(o.w)}<br><small>${esc(o.d)}, ${esc(o.p)}</small></span><span style="text-align:right">${o.split ? '<span class="stamp mid">một phần</span>' : '<small>toàn bộ</small>'}<br><a class="srcl" style="font-size:11px" href="${B}/doi-dia-chi?cu=${o.id}">chi tiết</a></span></li>`).join('')}</ul>
       <div class="acts" style="margin-top:14px"><button class="btn" data-copy="${esc(share)}">Sao chép liên kết chia sẻ</button> <a class="btn" style="text-decoration:none;margin-left:6px" href="${B}/tinh/${r.to.slug}?xa=${r.to.code}">Xem trên bản đồ</a></div>`;

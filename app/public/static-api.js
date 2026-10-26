@@ -54,6 +54,8 @@ const routes = [
       if (sp && st) { const o = await get(`/osm/${r.id}.json`).catch(() => null); out.resolve = resolveStreet(o, st.slice(0, 120), to.map(t => t.code)); }
       return out; }
     const w = C.newBy[q.get('new')]; if (!w) throw new Error(404); return { to: { code: w.c, name: w.n, province: w.pn, provinceCode: w.p, slug: C.byCode[w.p].slug }, from: C.rev[w.c] || [] }; }],
+  [/^\/api\/old-units/, async (C, m, q) => { const vi = (a, b) => a.localeCompare(b, 'vi'), uniq = a => [...new Set(a)].sort(vi), p = q.get('p'), d = q.get('d');
+    return !p ? uniq(C.legacy.map(r => r.p)) : !d ? uniq(C.legacy.filter(r => r.p === p).map(r => r.d)) : C.legacy.filter(r => r.p === p && r.d === d).map(r => ({ id: r.id, w: r.w, n: r.t.length })).sort((x, y) => vi(x.w, y.w)); }],
   [/^\/api\/locate/, async (C, m, q) => { const lat = +q.get('lat'), lon = +q.get('lon'); if (!(lat > 7 && lat < 24 && lon > 102 && lon < 118)) throw new Error(400);
     const r = q.get('old') && C.legById[q.get('old')]; const only = r ? r.t.map(x => x[0]) : null;
     const provs = only ? [...new Set(only.map(c => C.newBy[c].p))] : C.provinces.map(p => p.code);
